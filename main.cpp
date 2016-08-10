@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Example main-file showing how to use tyxgraph
  */
 
 /* 
@@ -12,14 +10,16 @@
  */
 
 #include <cstdlib>
-
+#include "Graph.h"
 using namespace std;
 
-/*
- * 
- */
 int main(int argc, char** argv) {
-
+	static Graph G;
+	G.loadUndirected(argv[1]); // TODO ca-AstroPh goes wrong complete with WCC node and edge count
+	G.calcSCC();
+	G.calcWCC();
+	G.stats();
+	G.wccDistri();
 	return 0;
 }
 
