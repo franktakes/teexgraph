@@ -15,7 +15,7 @@ using namespace std;
 
 int main(int argc, char** argv) {
 	static Graph G;
-	G.loadUndirected(argv[1]); // TODO ca-AstroPh goes wrong complete with WCC node and edge count
+	G.loadUndirected(argv[1]); 
 	G.calcSCC();
 	G.calcWCC();
 	G.stats();
