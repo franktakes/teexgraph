@@ -16,7 +16,7 @@ Several explicit design choices were made in tyxGraph:
 
 * Install using "make" and then run the executable "tyxgraph". 
 * The library supports networks with up to INT_MAX (2 billion) nodes.
-* Friendly input grapg files are expected in whitespace-separated edge list format (although comments, so lines that do not start with a character in [0-9], at the beginning of an edge file are allowed).
+* Friendly input graph files are expected in whitespace-separated edge list format (although meta information, so lines that do not start with a character in [0-9], at the beginning of an edge file are allowed).
     After the first line with a pair of integers representing an edge, only pairs of integers are expected.
 * Consult the main.cpp file for examples of how to use the code. 
 
