@@ -4,7 +4,7 @@ This C++ library is intended for the analysis of large-scale network data.
 
 ## About
 
-Several explicit design choices were made in tyxgraph:
+Several explicit design choices were made in tyxGraph:
 
 * Designed to handle millions of nodes and billions of edges.
 * All computation done in-memory and where possible on all available CPU's using OpenMP. 
