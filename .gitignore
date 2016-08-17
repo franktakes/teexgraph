@@ -27,5 +27,10 @@
 *.exe
 *.out
 *.app
+tyxgraph
+
+# Netbeans stuff
+.dep.inc
+/nbproject/
 /build/
 /dist/

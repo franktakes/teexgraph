@@ -1,32 +1,31 @@
-CC           = g++
-FLAGS        = -Iinclude
-CFLAGS       = -Wall -Wextra -fopenmp
-DEBUGFLAGS   = -O3 -D _DEBUG
-RELEASEFLAGS = -O3 -D NDEBUG -fwhole-program -fopenmp
+CXX          = g++
+LDFLAGS      = -Iinclude
+CXXFLAGS     = -pedantic -Wall -march=native -fopenmp
+DEBUGFLAGS   = -O0 -ggdb3 -Wextra 
+RELEASEFLAGS = -O3 -DNDEBUG #-fwhole-program
+PROFILEFLAGS = $(RELEASFLAGS) -pg
 
-TARGET     = tyxgraph
-SOURCEDIR  = ./
-SOURCES    = $(shell echo $(SOURCEDIR)*.cpp)
-INCLUDEDIR = ./
-COMMON     = 
-HEADERS    = $(shell echo $(INCLUDEDIR)*.h)
-OBJECTS    = $(SOURCES:.cpp=.o)
+TARGET       = tyxgraph
+SOURCEDIR    = ./
+SOURCES      = $(shell find $(SOURCEDIR) -name '*.cpp')
+INCLUDEDIR   = ./
+HEADERS      = $(shell find $(INCLUDEDIR) -name '*.h')
+COMMON       = 
+OBJECTS      = $(SOURCES:.cpp=.o)
 
-PREFIX = $(DESTDIR)/usr/local
-BINDIR = $(PREFIX)/bin
+PREFIX       = $(DESTDIR)/usr/local
+BINDIR       = $(PREFIX)/bin
 
+all: release
 
-all: $(TARGET)
+release: CXXFLAGS += $(RELEASEFLAGS)
+release: $(TARGET)
 
-$(TARGET): $(OBJECTS) $(COMMON)
-	$(CC) $(FLAGS) $(CFLAGS) $(DEBUGFLAGS) -o $(TARGET) $(OBJECTS)
+debug: CXXFLAGS += $(DEBUGFLAGS)
+debug: $(TARGET)
 
-release: $(SOURCES) $(COMMON)
-	$(CC) $(FLAGS) $(CFLAGS) $(RELEASEFLAGS) -o $(TARGET) $(SOURCES)
-
-profile: CFLAGS += -pg
+profile: CXXFLAGS += $(PROFILEFLAGS)
 profile: $(TARGET)
-
 
 install: release
 	install -D $(TARGET) $(BINDIR)/$(TARGET)
@@ -35,19 +34,23 @@ install-strip: release
 	install -D -s $(TARGET) $(BINDIR)/$(TARGET)
 
 uninstall:
-	-rm $(BINDIR)/$(TARGET)
-
+	rm $(BINDIR)/$(TARGET)
 
 clean:
-	-rm -f $(OBJECTS) gmon.out
+	rm -f $(OBJECTS) gmon.out
 
 distclean: clean
-	-rm -f $(TARGET)
+	rm -f $(TARGET)
 
+rebuild: clean all
 
-%.o: %.c $(HEADERS) $(COMMON)
-	$(CC) $(FLAGS) $(CFLAGS) $(DEBUGFLAGS) -c -o $@ $<
+tarball:
+	tar -cvzf $(TARGET).tar.gz $(HEADERS) $(SOURCES) $(COMMON) Makefile
 
+$(TARGET): $(OBJECTS)
+	$(CXX) $(LDFLAGS) $(CXXFLAGS) -o $(TARGET) $(OBJECTS)
 
-.PHONY: all profile release install install-strip uninstall clean distclean
+%.o: %.cc
+	$(CXX) $(LDFLAGS) $(CXXFLAGS) -o $@ -c $<
 
+.PHONY: all release debug profile install install-strip uninstall clean distclean rebuild tarball
