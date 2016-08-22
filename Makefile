@@ -1,3 +1,9 @@
+###                                                                          ###
+#  teexgraph --- by Frank Takes --- https://github.com/franktakes/teexgraph      #
+#                                                                              #
+#  This Makefile based on https://github.com/jkvis/generic-cpp-template        #
+###                                                                          ###
+
 CXX          = g++
 LDFLAGS      = -Iinclude
 CXXFLAGS     = -pedantic -Wall -march=native -fopenmp
@@ -5,7 +11,7 @@ DEBUGFLAGS   = -O0 -ggdb3 -Wextra
 RELEASEFLAGS = -O3 -DNDEBUG #-fwhole-program
 PROFILEFLAGS = $(RELEASFLAGS) -pg
 
-TARGET       = tyxgraph
+TARGET       = teexgraph
 SOURCEDIR    = ./
 SOURCES      = $(shell find $(SOURCEDIR) -name '*.cpp')
 INCLUDEDIR   = ./
