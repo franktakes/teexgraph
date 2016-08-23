@@ -9,20 +9,24 @@
 #include "omp.h"
 #include <iostream>
 using namespace std;
+
 Timer::Timer() {
     current = -1;
 }
+
 void Timer::click() {
     if(current != -1)
         cerr << "Time passed: " << now() - current << " sec." << endl;
     restart();
 }
+
 double Timer::now() {
     #ifdef _OPENMP
     return omp_get_wtime();
     #endif
     return(double) clock() / (double) CLOCKS_PER_SEC;
 }
+
 void Timer::restart() {
     current = now();
 }
