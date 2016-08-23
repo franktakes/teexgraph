@@ -4,7 +4,7 @@ This C++ library is intended for the analysis of large-scale network data.
 
 ## About
 
-Several explicit design choices were made in teexGraph:
+Several explicit design choices were made in in this library:
 
 * Designed to handle millions of nodes and billions of edges.
 * All computation done in-memory and where possible on all available CPU's using OpenMP. 
@@ -14,7 +14,7 @@ Several explicit design choices were made in teexGraph:
 
 ## Usage and Installation
 
-* Install using "make" and then run the executable "teexgraph". 
+* Install using `make` and then run the executable `teexgraph`. 
 * The library supports networks with up to INT_MAX (2 billion) nodes and as many edges as the memory of your machine can hold.
 * Friendly input files are expected; although comments (lines that do not start with a character in [0-9]) at the beginning of an edge file are allowed.
     After the first line with a pair of integers representing an edge, only pairs of integers are expected.
@@ -24,5 +24,4 @@ Several explicit design choices were made in teexGraph:
 
 This code was written for research-purposes only, and is and should in no way be seen as an attempt at creating a good piece of code with respect to any programming- or software-engineering standards whatsoever. 
 It comes without any warranty of merchantability or suitability for a particular purpose. 
-I do hope it helps you in your research. 
-The software has exclusively been tested under the UNIX operating system.
+The software has exclusively been tested under the UNIX operating system, in particular Ubuntu LTS (12.04, 14.04 and 16.04) and CentOS (6.7 and 7). 

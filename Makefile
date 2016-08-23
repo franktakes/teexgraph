@@ -1,7 +1,7 @@
 ###                                                                          ###
-#  teexgraph --- by Frank Takes --- https://github.com/franktakes/teexgraph      #
+#  teexGraph --- by Frank Takes --- https://github.com/franktakes/teexgraph    #
 #                                                                              #
-#  This Makefile based on https://github.com/jkvis/generic-cpp-template        #
+#  This Makefile is based on https://github.com/jkvis/generic-cpp-template     #
 ###                                                                          ###
 
 CXX          = g++
@@ -12,9 +12,9 @@ RELEASEFLAGS = -O3 -DNDEBUG #-fwhole-program
 PROFILEFLAGS = $(RELEASFLAGS) -pg
 
 TARGET       = teexgraph
-SOURCEDIR    = ./
+SOURCEDIR    = src/
 SOURCES      = $(shell find $(SOURCEDIR) -name '*.cpp')
-INCLUDEDIR   = ./
+INCLUDEDIR   = src/
 HEADERS      = $(shell find $(INCLUDEDIR) -name '*.h')
 COMMON       = 
 OBJECTS      = $(SOURCES:.cpp=.o)
@@ -43,7 +43,7 @@ uninstall:
 	rm $(BINDIR)/$(TARGET)
 
 clean:
-	rm -f $(OBJECTS) gmon.out
+	rm -f $(OBJECTS) gmon.out $(TARGET)
 
 distclean: clean
 	rm -f $(TARGET)
