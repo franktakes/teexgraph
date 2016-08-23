@@ -18,7 +18,7 @@ Several explicit design choices were made in in this library:
 * The library supports networks with up to INT_MAX (2 billion) nodes and as many edges as the memory of your machine can hold.
 * Friendly input files are expected; although comments (lines that do not start with a character in [0-9]) at the beginning of an edge file are allowed.
     After the first line with a pair of integers denoting an edge, only integer pairs are expected.
-* Consult the main.cpp file for examples of how to use the code. 
+* Consult the [main.cpp](src/main.cpp) file for examples of how to use the code. 
 
 ## Disclaimer
 
