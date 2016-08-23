@@ -1,6 +1,6 @@
 # teexGraph
 
-This C++ library is intended for large-scale network analysis and computation
+This C++ library is intended for large-scale network analysis and computation.
 
 ## About
 
