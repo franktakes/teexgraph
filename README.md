@@ -10,7 +10,17 @@ Several explicit design choices were made in in this library:
 * All computation done in-memory and where possible on all available CPU's using OpenMP. 
 * Focus is on the analysis of the topology/structure of simple directed and undirected graphs, read from a file. 
 * No support for graph models/generators, node/edge attributes, node/edge weights, multi-partite networks or visualization (there are other tools that can do that).
-* Preference for simplicity over complexity; low-level C++ data structures are used wherever possible, requiring no other libraries than the standard g++ compiler and the C++ standard library. 
+* Preference for simplicity over complexity; low-level C++ data structures are used wherever possible, requiring no other libraries than the standard `g++` compiler and the C++ standard library. 
+
+## Features
+
+* Fast computation of the diameter of real-world networks, based on:
+
+  > F.W. Takes and W.A. Kosters, Determining the Diameter of Small World Networks, in Proceedings of the 20th ACM International Conference on Information and Knowledge Management (CIKM 2011), pp. 1191-1196, 2011. doi: [10.1145/2063576.2063748]http://dx.doi.org/10.1145/2063576.2063748)
+  
+* Fast computation of extreme distance metrics: the radius, diameter, center size, periphery size and eccentricity distribution of large real-world networks, based on the algorithms presented in:
+ 
+ > F.W. Takes and W.A. Kosters, Computing the Eccentricity Distribution of Large Graphs, Algorithms 6(1): 100-118, 2013. doi: [10.3390/a6010100](http://dx.doi.org/10.3390/a6010100)
 
 ## Usage and Installation
 

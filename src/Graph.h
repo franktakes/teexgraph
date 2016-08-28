@@ -39,7 +39,6 @@ public:
     void clear();
     bool loadDirected(const string);
     bool loadUndirected(const string);
-    void makeUndirected();
 
     // components        
     void computeSCC();
@@ -80,6 +79,9 @@ public:
     // external querying
     vector<int> & neighbors(const int);
 
+    vector< vector<int> > E; // list of out-neighbors of i 		
+    bool isUndirected();
+    
 protected:
 
     bool addEdge(const int, const int);
@@ -88,15 +90,17 @@ protected:
     void goMarkSCC(const int, const int);
     void goVisitSCC(const int, vector<bool> &, stack<int> &, vector<int> &, vector<int> &);
     bool inScope(const int, const Scope);
+    void makeUndirected();    
     int mapNode(const nodeidtype);
     nodeidtype revMapNode(const int);
     void sortEdgeList();
+
+//private:
 
     // graph data, always consistent
     static const int MAXN = 10000000; // maximal number of nodes
     map<nodeidtype, int> nodeMapping; // mapping of input node-identifiers to 0, .., n-1
     map<int, nodeidtype> revMapping; // mapping 0, .., n-1 to input node-identifiers 
-    vector< vector<int> > E; // list of out-neighbors of i 		
     vector< vector<int> > rE; // list of in-neighbors of i	
     vector<long> inDeg; // indegrees
     vector<long> outDeg; // outdegrees

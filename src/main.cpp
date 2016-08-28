@@ -4,7 +4,7 @@
  * Example main-file showing how to use teexGraph
  */
 
-#include "Graph.h"
+#include "BDGraph.h"
 #include "Timer.h"
 using namespace std;
 
@@ -18,7 +18,7 @@ int main(const int argc, const char* argv[]) {
     T.click();
 
     // create and load graph from file
-    Graph G;
+    BDGraph G;
     if(!G.loadUndirected(argv[1]))
         return 1;
 
@@ -29,8 +29,8 @@ int main(const int argc, const char* argv[]) {
     G.stats();
     T.click();
 
-    // compute the distance distribution (APSP) in parallel
-    G.distanceDistribution(WCC, 1);
+    // compute the diameter of the largest WCC of this network
+    cout << G.diameterBD() << endl;
     T.click();
     return 0;
 }

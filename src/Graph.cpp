@@ -855,3 +855,10 @@ vector<long> Graph::distanceDistribution(const Scope scope = FULL, const double 
 } // distanceDistribution
 
 
+vector<int> & Graph::neighbors(const int i) {
+    return E[i];
+}
+
+bool Graph::isUndirected() {
+    return undirected;
+}
