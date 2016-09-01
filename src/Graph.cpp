@@ -11,16 +11,20 @@ Graph::Graph() {
     clear();
 } // Graph constructor
 
+// initialization of Graph object
+Graph::Graph(const int nmax) {
+    assert(nmax > 0);
+    maxn = nmax;
+    clear();
+} // Graph constructor
 
 // erase the current Graph object
 void Graph::clear() {
     nodeMapping.clear();
     revMapping.clear();
-    E.assign(MAXN, vector<int>(0));
-    rE.assign(MAXN, vector<int>(0));
-    inDeg.assign(MAXN, 0);
-    outDeg.assign(MAXN, 0);
-    hasSelfLoop.assign(MAXN, false);
+    E.assign(maxn, vector<int>(0));
+    rE.assign(maxn, vector<int>(0));
+    hasSelfLoop.assign(maxn, false);
     n = m = selfm = nexti = 0;
     loaded = sortedandunique = undirected = doneWCC = doneSCC = false;
     largestWCC = wccs = largestSCC = sccs = 0;
@@ -54,7 +58,7 @@ nodeidtype Graph::revMapNode(const int i) {
 bool Graph::addEdge(const int u, const int v) {
 
     // check if node is within bounds set in Graph.h
-    if(u < 0 || u >= MAXN || v < 0 || v >= MAXN){
+    if(u < 0 || u >= maxn || v < 0 || v >= maxn){
         return false;
     }
 
@@ -68,18 +72,15 @@ bool Graph::addEdge(const int u, const int v) {
     m++;
 
     // increment node count if one of the two nodes is first seen
-    if(inDeg[v] == 0 && E[v].size() == 0){
+    if(rE[v].size() == 0 && E[v].size() == 0){
         n++;
     }
-    if(v != u && inDeg[u] == 0 && E[u].size() == 0){
+    if(v != u && rE[u].size() == 0 && E[u].size() == 0){
         n++;
     }
 
     E[u].push_back(v);
     rE[v].push_back(u);
-
-    inDeg[v]++;
-    outDeg[u]++;
 
     sortedandunique = false;
     undirected = false;
@@ -156,7 +157,7 @@ bool Graph::loadDirected(const string filename) {
     clog << "- " << edgesAdded << " edges added (m = " << m << ") in total\n- "
             << edgesSkipped << " edges skipped" << endl;
     if(edgesSkipped - selfm > 0)
-        clog << " (out-of-bounds, increase MAXN in Graph.h!)";
+        clog << " (out-of-bounds, increase maxn in Graph.h!)";
     clog << "- " << selfm << " self-edges added" << endl;
     clog << endl;
 
@@ -216,8 +217,6 @@ void Graph::sortEdgeList() {
             rE[i].erase(unique(rE[i].begin(), rE[i].end()), rE[i].end());
             m += (long) E[i].size();
             removed += (E[i].size() - begin);
-            inDeg[i] = rE[i].size();
-            outDeg[i] = E[i].size();
         }
 
         sortedandunique = true;
@@ -735,11 +734,21 @@ void Graph::sccSizeDistribution() {
     printDistri(sccNodes, SCC);
     clog << "SCC size distribution printed." << endl;
 } // sccSizeDistribution
+
 void Graph::outdegreeDistribution(const Scope scope = FULL) {
+    vector<long> outDeg(n); // outdegrees    
+    for(int i=0; i<n; i++) {
+        outDeg[i] = (signed)E[i].size();
+    }    
     printDistri(outDeg, scope);
     clog << "Outdegree distribution printed." << endl;
 } // outdegreeDistribution
+
 void Graph::indegreeDistribution(const Scope scope = FULL) {
+    vector<long> inDeg(n); // indegrees
+    for(int i=0; i<n; i++) {
+        inDeg[i] = (signed)rE[i].size();
+    }
     printDistri(inDeg, scope);
     clog << "Indegree distribution printed." << endl;
 } // indegreeDistribution

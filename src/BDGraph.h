@@ -12,6 +12,7 @@ class BDGraph : public Graph {
 
 public:
     BDGraph();
+    BDGraph(const int);
 
     // BD functions
     int centerSizeBD();

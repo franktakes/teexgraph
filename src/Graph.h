@@ -25,6 +25,9 @@ using namespace std;
 // node datatype in input file. in terms of speed, int > long > string
 typedef long nodeidtype;
 
+// default max. node count; change here or by passing int to Graph constructor
+const int MAXN = 10000000; 
+
 // diferent scopes at which we can call functions: on the FULL network, on the
 // largest weakly (WCC) or strongly (SCC) connected component 
 enum Scope {
@@ -36,6 +39,7 @@ class Graph {
 public:
     // initialization and loading
     Graph();
+    Graph(const int);    
     void clear();
     bool loadDirected(const string);
     bool loadUndirected(const string);
@@ -79,7 +83,6 @@ public:
     // external querying
     vector<int> & neighbors(const int);
 
-    vector< vector<int> > E; // list of out-neighbors of i 		
     bool isUndirected();
     
 protected:
@@ -95,15 +98,18 @@ protected:
     nodeidtype revMapNode(const int);
     void sortEdgeList();
 
+    vector<int> wccId; // WCC # of node i
+    vector<int> wccNodes; // nr. of nodes in WCC i			
+	
 //private:
 
     // graph data, always consistent
-    static const int MAXN = 10000000; // maximal number of nodes
+    int maxn = MAXN; // maximal number of nodes
     map<nodeidtype, int> nodeMapping; // mapping of input node-identifiers to 0, .., n-1
     map<int, nodeidtype> revMapping; // mapping 0, .., n-1 to input node-identifiers 
+    vector< vector<int> > E; // list of out-neighbors of i 		
     vector< vector<int> > rE; // list of in-neighbors of i	
-    vector<long> inDeg; // indegrees
-    vector<long> outDeg; // outdegrees
+
     int n; // number of nodes										
     long m; // number of links
     vector<bool> hasSelfLoop; // true if node at index has a self-loop
@@ -122,8 +128,8 @@ protected:
     int largestSCC; // index of largest SCC 
     int wccs; // number of WCCs
     int sccs; // number of WCCs
-    vector<int> wccId; // WCC # of node i
-    vector<int> wccNodes; // nr. of nodes in WCC i								
+
+	
     vector<long> wccEdges; // nr. of edges in WCC i				
     vector<int> sccId; // SCC # of node i
     vector<int> sccNodes; // nr. of nodes in SCC i								

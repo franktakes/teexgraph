@@ -19,6 +19,9 @@
 BDGraph::BDGraph() {
 }
 
+BDGraph::BDGraph(const int nmax) : Graph(nmax) {
+    
+}
 
 // compute the eccentricity of node u - O(m)
 int BDGraph::eccentricity(const int u) {
