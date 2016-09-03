@@ -56,7 +56,7 @@ int BDGraph::diameterAPSP() {
     for(int i = 0; i < nodes(FULL) ; i++){
         if(i % (nodes(FULL)  / 100) == 0) // show status %
             cerr << "\b\b\b\b" << i / (nodes(FULL)  / 100) << "%";
-        if(inScope(i, WCC))
+        if(inScope(i, LWCC))
             diameter = max(diameter, eccentricity(i));
     }
     cerr << "Diameter computation (APSP) done." << endl << endl;
@@ -73,7 +73,7 @@ int BDGraph::radiusAPSP() {
     for(int i = 0; i < nodes(FULL) ; i++){
         if(i % (nodes(FULL)  / 100) == 0) // show status %
             cerr << "\b\b\b\b" << i / (nodes(FULL) / 100) << "%";
-        if(inScope(i, WCC))
+        if(inScope(i, LWCC))
             rad = min(rad, eccentricity(i));
     }
     cerr << "Radius computation (APSP) done." << endl << endl;
@@ -88,7 +88,7 @@ int BDGraph::pruning() {
 
     // pruned[i] is going to contain the node number that i has identical ecc to
     for(int i = 0; i < nodes(FULL); i++){
-        if(!inScope(i, WCC))
+        if(!inScope(i, LWCC))
             continue;
 
         z = neighbors(i).size();
@@ -130,7 +130,7 @@ int BDGraph::radiusBD() {
 vector<int> BDGraph::eccentricitiesBD() {
     const bool PRUNE = true;
     extremaBounding(3, PRUNE);
-    printDistri(ecc_lower, WCC);
+    printDistri(ecc_lower, LWCC);
     return ecc_lower;
 } // eccentricitiesBD
 
@@ -140,7 +140,7 @@ vector<int> BDGraph::eccentricitiesAPSP() {
     pruned.assign(nodes(FULL), -1);
     vector<int> intarray(nodes(FULL), 0);
     for(int i = 0; i < nodes(FULL); i++){
-        if(inScope(i, WCC)){
+        if(inScope(i, LWCC)){
             intarray[i] = eccentricity(i);
         }
     }
@@ -164,17 +164,17 @@ int BDGraph::centerSizeBD() {
 // compute extreme distance values in the WCC using BoundingDiameters
 int BDGraph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
 
-    if(!isUndirected() || nodes(WCC) < 2)
+    if(!isUndirected() || nodes(LWCC) < 2)
         return 0;
 
     // initialize some values
     int it = 0, current_ecc, current = -1, // n-1 for random
             minupper = -2, maxupper = -1, minlower = -4, maxlower = -3,
             minlowernode = -1, maxuppernode = -1,
-            candidates = nodes(WCC);
+            candidates = nodes(LWCC);
 
     ecc_lower.assign(nodes(FULL), 0);
-    ecc_upper.assign(nodes(FULL), nodes(WCC));
+    ecc_upper.assign(nodes(FULL), nodes(LWCC));
     candidate.assign(nodes(FULL), true);
     d.assign(nodes(FULL), 0);
 
@@ -193,7 +193,7 @@ int BDGraph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
         /*
         do {
                 current = rand() % n;
-        } while(!candidate[current] || !inScope(current, WCC) || pruned[current] >= 0);
+        } while(!candidate[current] || !inScope(current, LWCC) || pruned[current] >= 0);
         */
 
         // select the next node to be investigated		
@@ -202,7 +202,7 @@ int BDGraph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
         if(current == -1){ // only in the first round, select node with highest degree
             current = 0;
             for(int i = 1; i < nodes(FULL); i++){
-                if(d[i] == -1 || !inScope(i, WCC) || pruned[i] >= 0)
+                if(d[i] == -1 || !inScope(i, LWCC) || pruned[i] >= 0)
                     continue;
                 if(neighbors(i).size() > neighbors(current).size()){
                     current = i;
@@ -224,16 +224,16 @@ int BDGraph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
                 << ecc_upper[current] << ") -> ";
 
         // initialize min/max values
-        minlower = nodes(WCC);
+        minlower = nodes(LWCC);
         maxlower = 0;
-        minupper = nodes(WCC);
+        minupper = nodes(LWCC);
         maxupper = 0;
         maxuppernode = -1;
         minlowernode = -1;
 
         // update bounds
         for(int i = 0; i < nodes(FULL); i++){
-            if(d[i] == -1 || !inScope(i, WCC) || pruned[i] >= 0)
+            if(d[i] == -1 || !inScope(i, LWCC) || pruned[i] >= 0)
                 continue;
 
             // update eccentricity bounds
@@ -249,7 +249,7 @@ int BDGraph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
 
         // update candidate set
         for(int i = 0; i < nodes(FULL); i++){
-            if(!candidate[i] || d[i] == -1 || !inScope(i, WCC) || pruned[i] >= 0)
+            if(!candidate[i] || d[i] == -1 || !inScope(i, LWCC) || pruned[i] >= 0)
                 continue;
 
             // disregard nodes that can no longer contribute
@@ -294,8 +294,8 @@ int BDGraph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
     cerr << "\nIterations: ";
     //cout << "\t" << it;
     cerr << "\t" << it;
-    cerr << endl << "Number of brute-force iterations: " << nodes(WCC)
-            << ". Speed-up factor: " << (double) nodes(WCC) / it << endl;
+    cerr << endl << "Number of brute-force iterations: " << nodes(LWCC)
+            << ". Speed-up factor: " << (double) nodes(LWCC) / it << endl;
 
     // return the diameter
     if(TYPE == 1){

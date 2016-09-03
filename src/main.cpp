@@ -19,7 +19,7 @@ int main(const int argc, const char* argv[]) {
 
     // create and load graph from file. pass an int >= nodecount 
     // to optimize memory usage or if you want to have a nodecount > 10M nodes
-    BDGraph G(); 
+    BDGraph G; 
     if(!G.loadUndirected(argv[1]))
         return 1;
 

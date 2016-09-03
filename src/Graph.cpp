@@ -257,25 +257,25 @@ void Graph::stats() {
     if(doneSCC){
         clog << setw(LEFTWIDTH) << "Strongly connected components: " << sccs << endl;
         clog << setw(LEFTWIDTH) << "Largest SCC #: " << largestSCC << endl << endl;
-        clog << setw(LEFTWIDTH) << "SCC nodes n: " << nodes(SCC) << endl;
-        clog << setw(LEFTWIDTH) << "SCC links m: " << edges(SCC) << endl;
-        clog << setw(LEFTWIDTH) << "SCC self-edges: " << selfEdges(SCC) << endl;
-        clog << setw(LEFTWIDTH) << "SCC average degree: " << averageDegree(SCC) << endl;
-        clog << setw(LEFTWIDTH) << "SCC density: " << density(SCC) << endl;
-        clog << setw(LEFTWIDTH) << "SCC reciprocity: " << reciprocity(SCC) << endl;
+        clog << setw(LEFTWIDTH) << "SCC nodes n: " << nodes(LSCC) << endl;
+        clog << setw(LEFTWIDTH) << "SCC links m: " << edges(LSCC) << endl;
+        clog << setw(LEFTWIDTH) << "SCC self-edges: " << selfEdges(LSCC) << endl;
+        clog << setw(LEFTWIDTH) << "SCC average degree: " << averageDegree(LSCC) << endl;
+        clog << setw(LEFTWIDTH) << "SCC density: " << density(LSCC) << endl;
+        clog << setw(LEFTWIDTH) << "SCC reciprocity: " << reciprocity(LSCC) << endl;
         clog << endl;
     }
 
     if(doneWCC){
         clog << setw(LEFTWIDTH) << "Weakly connected components: " << wccs << endl;
         clog << setw(LEFTWIDTH) << "Largest WCC #: " << largestWCC << endl << endl;
-        clog << setw(LEFTWIDTH) << "WCC nodes n: " << nodes(WCC) << endl;
-        clog << setw(LEFTWIDTH) << "WCC links m: " << edges(WCC) << endl;
-        clog << setw(LEFTWIDTH) << "WCC self-edges: " << selfEdges(WCC) << endl;
+        clog << setw(LEFTWIDTH) << "WCC nodes n: " << nodes(LWCC) << endl;
+        clog << setw(LEFTWIDTH) << "WCC links m: " << edges(LWCC) << endl;
+        clog << setw(LEFTWIDTH) << "WCC self-edges: " << selfEdges(LWCC) << endl;
         if(undirected)
-            clog << setw(LEFTWIDTH) << "WCC undirected edges: " << selfEdges(WCC) + ((edges(WCC) - selfEdges(WCC)) / 2) << endl;
-        clog << setw(LEFTWIDTH) << "WCC average degree: " << averageDegree(WCC) << endl;
-        clog << setw(LEFTWIDTH) << "WCC density: " << density(WCC) << endl;
+            clog << setw(LEFTWIDTH) << "WCC undirected edges: " << selfEdges(LWCC) + ((edges(LWCC) - selfEdges(LWCC)) / 2) << endl;
+        clog << setw(LEFTWIDTH) << "WCC average degree: " << averageDegree(LWCC) << endl;
+        clog << setw(LEFTWIDTH) << "WCC density: " << density(LWCC) << endl;
         clog << endl;
     }
     clog << endl;
@@ -286,8 +286,8 @@ void Graph::stats() {
 bool Graph::inScope(const int u, const Scope scope) {
     return
     (scope == FULL ||
-            (scope == WCC && doneWCC && wccId[u] == largestWCC) ||
-            (scope == SCC && doneSCC && sccId[u] == largestSCC));
+            (scope == LWCC && doneWCC && wccId[u] == largestWCC) ||
+            (scope == LSCC && doneSCC && sccId[u] == largestSCC));
 } // inScope
 
 
@@ -295,22 +295,35 @@ bool Graph::inScope(const int u, const Scope scope) {
 int Graph::nodes(const Scope scope = FULL) {
     if(scope == FULL){
         return n;
-    } else if(scope == WCC && doneWCC){
+    } else if(scope == LWCC && doneWCC){
         return wccNodes[largestWCC];
-    } else if(scope == SCC && doneSCC){
+    } else if(scope == LSCC && doneSCC){
         return sccNodes[largestSCC];
     }
     return -1;
 } // nodes
 
+// Get the number of nodes in particular WCC
+int Graph::nodesInWcc(const int WCCId) {
+    if(doneWCC)
+        return wccNodes[WCCId];
+    return -1;
+} // nodes
+    
+    // Get the number of nodes in particular WCC
+int Graph::wccOf(const int u) {
+    if(doneWCC)
+        return wccId[u];
+    return -1;
+} // nodes
 
 // Get the number of links m
 int Graph::edges(const Scope scope = FULL) {
     if(scope == FULL){
         return m;
-    } else if(scope == WCC && doneWCC){
+    } else if(scope == LWCC && doneWCC){
         return wccEdges[largestWCC];
-    } else if(scope == SCC && doneSCC){
+    } else if(scope == LSCC && doneSCC){
         return sccEdges[largestSCC];
     }
     return -1;
@@ -321,13 +334,13 @@ int Graph::edges(const Scope scope = FULL) {
 int Graph::selfEdges(const Scope scope = FULL) {
     if(scope == FULL)
         return selfm;
-    else if(scope == WCC && doneWCC){
+    else if(scope == LWCC && doneWCC){
         int total = 0;
         for(int i = 0; i < n; i++)
             if(inScope(i, scope) && hasSelfLoop[i])
                 total++;
         return total;
-    } else if(scope == SCC && doneSCC){
+    } else if(scope == LSCC && doneSCC){
         int total = 0;
         for(int i = 0; i < n; i++)
             if(inScope(i, scope) && hasSelfLoop[i])
@@ -352,6 +365,7 @@ void Graph::makeUndirected() {
     // add all links
     sortedandunique = false;
 
+    // TODO make parallel with OpenMP
     for(int i = 0; i < n; i++){
         z = E[i].size();
         for(j = 0; j < z; j++)
@@ -565,16 +579,16 @@ double Graph::density(const Scope scope) {
         if(m > 0 && n > 1)
             return(((double) m) / ((double) n)) / (((double) (n - noselfnodeswitch)));
         return 0;
-    } else if((scope == WCC) & doneWCC){
+    } else if((scope == LWCC) & doneWCC){
         int noselfnodeswitch = 1;
-        if(selfEdges(WCC) > 0)
+        if(selfEdges(LWCC) > 0)
             noselfnodeswitch = 0;
         if(wccNodes[largestWCC] > 1)
             return(((double) wccEdges[largestWCC]) / ((double) wccNodes[largestWCC])) / (((double) (wccNodes[largestWCC] - noselfnodeswitch)));
         return 0;
-    } else if((scope == SCC) & doneSCC){
+    } else if((scope == LSCC) & doneSCC){
         int noselfnodeswitch = 1;
-        if(selfEdges(SCC) > 0)
+        if(selfEdges(LSCC) > 0)
             noselfnodeswitch = 0;
         if(sccNodes[largestSCC] > 1)
             return(((double) sccEdges[largestSCC]) / ((double) sccNodes[largestSCC])) / (((double) (sccNodes[largestSCC] - noselfnodeswitch)));
@@ -591,12 +605,12 @@ double Graph::averageDegree(const Scope scope) {
             return((double) m / (double) n);
         else
             return((double) m / (double) n) * 2;
-    } else if(scope == WCC && doneWCC){
+    } else if(scope == LWCC && doneWCC){
         if(undirected)
             return((double) wccEdges[largestWCC] / (double) wccNodes[largestWCC]);
         else
             return((double) wccEdges[largestWCC] / (double) wccNodes[largestWCC]) * 2;
-    } else if(scope == SCC && doneSCC){
+    } else if(scope == LSCC && doneSCC){
         if(undirected)
             return((double) sccEdges[largestSCC] / (double) sccNodes[largestSCC]);
         else
@@ -624,8 +638,8 @@ vector<double> Graph::localClustering(const Scope scope = FULL) {
 
 #pragma omp parallel for schedule(dynamic, 1) private(temp)
     for(int i = 0; i < n; i++){
-        if(i % (n / 10) == 0) // show status %
-            clog << " " << i / (n / 100) << "%";
+        if(i % max(1, n / 20) == 0) // show status % without div by 0 errors
+            clog << " " << i / max(1, n / 100) << "%";
         if(inScope(i, scope)){
             temp = nodeClusteringCoefficient(i);
             temparray[i] = temp;
@@ -655,6 +669,7 @@ double Graph::averageClusteringCoefficient(const Scope scope = FULL) {
 long Graph::triangles() {
     long total = 0;
     pair<long, long> result;
+    // TODO make parallel with OpenMP    
     for(int i = 0; i < n; i++){
         result = trianglesWedgesAround(i);
         total += result.first;
@@ -667,6 +682,7 @@ long Graph::triangles() {
 long Graph::wedges() {
     long total = 0;
     pair<long, long> result;
+    // TODO make parallel with OpenMP    
     for(int i = 0; i < n; i++){
         result = trianglesWedgesAround(i);
         total += result.second;
@@ -712,6 +728,7 @@ pair<long, long> Graph::trianglesWedgesAround(const int u) {
 // compute the graph's clustering coefficient: triangles*3/possible triangles
 double Graph::graphClusteringCoefficient(const Scope scope = FULL) {
     long double triangles = 0, wedges = 0;
+    // TODO make parallel with OpenMP
     for(int i = 0; i < n; i++)
         if(inScope(i, scope)){
             pair<long, long> result = trianglesWedgesAround(i);
@@ -724,14 +741,14 @@ double Graph::graphClusteringCoefficient(const Scope scope = FULL) {
 
 // distribution of weakly connected component sizes
 void Graph::wccSizeDistribution() {
-    printDistri(wccNodes, WCC);
+    printDistri(wccNodes, LWCC);
     clog << "WCC size distribution printed." << endl;
 } // wccSizeDistribution
 
 
 // distribution of strongly connected component sizes
 void Graph::sccSizeDistribution() {
-    printDistri(sccNodes, SCC);
+    printDistri(sccNodes, LSCC);
     clog << "SCC size distribution printed." << endl;
 } // sccSizeDistribution
 
@@ -783,7 +800,7 @@ int Graph::distance(const int u, const int v) {
 vector<int> Graph::distances(const int u, vector<long> & dtotals) {
     int current, z;
     queue<int> q;
-    vector<int> d(n, -1);
+    vector<int> d(nodes(FULL), -1);
 
     d[u] = 0;
     q.push(u);
@@ -791,12 +808,12 @@ vector<int> Graph::distances(const int u, vector<long> & dtotals) {
     while(!q.empty()){
         current = q.front();
         q.pop();
-        z = E[current].size();
+        z = neighbors(current).size();
         for(int j = 0; j < z; j++){
-            if(d[E[current][j]] == -1){
-                d[E[current][j]] = d[current] + 1;
-                q.push(E[current][j]);
-                dtotals[d[E[current][j]]]++;
+            if(d[neighbors(current)[j]] == -1){
+                d[neighbors(current)[j]] = d[current] + 1;
+                q.push(neighbors(current)[j]);
+                dtotals[d[neighbors(current)[j]]]++;
             }
         }
     }
@@ -805,8 +822,10 @@ vector<int> Graph::distances(const int u, vector<long> & dtotals) {
 
 
 // print the distance distribution [distance frequency]
-vector<long> Graph::distanceDistribution(const Scope scope = FULL, const double samplesize = 1.0) {
+vector<long> Graph::distanceDistribution(const Scope scope = FULL, const double inputsamplesize = 1.0) {
 
+    double samplesize = inputsamplesize;
+    
     if(nodes(scope) < 2)
         return vector<long>(1, 0);
 
@@ -817,18 +836,20 @@ vector<long> Graph::distanceDistribution(const Scope scope = FULL, const double 
     vector<bool> done(n + 1, false); // for sampling
 
     if(samplesize < 1.0){
-        clog << "Computing distance distribution (based on a " << samplesize * 100
-                << "% random sample) with " << cpus << " CPUs..." << endl;
         maxi = (double) nodes(scope) * samplesize;
-    } else{
-        clog << "Computing exact distance distribution with " << cpus << " CPUs..." << endl;
+    } 
+    else if(samplesize > 1.0 && samplesize < nodes(scope)) {
+        maxi = samplesize;
+        samplesize = (double)maxi / (double)nodes(scope);
     }
+    clog << "Computing distance distribution (based on a " << samplesize * 100
+                << "% sample of " << maxi << " nodes) with " << cpus << " CPUs..." << endl;    
 
 #pragma omp parallel for schedule(dynamic, 1) private(tid, a)
     for(int i = 0; i < maxi; i++){
         tid = omp_get_thread_num();
-        if(i % (maxi / 20) == 0) // show status %
-            clog << " " << i / (maxi / 100) << "%";
+        if(i % max(1, maxi / 20) == 0) // show status % without div by 0 errors
+            clog << " " << i / max(1, maxi / 100) << "%";
 
         // sampled 
         if(samplesize < 1.0){
@@ -863,11 +884,11 @@ vector<long> Graph::distanceDistribution(const Scope scope = FULL, const double 
     return alllongarray;
 } // distanceDistribution
 
-
+// return reference to vector with neighbors of a node
 vector<int> & Graph::neighbors(const int i) {
     return E[i];
-}
+} // neighbors
 
 bool Graph::isUndirected() {
     return undirected;
-}
+} // isUndirected

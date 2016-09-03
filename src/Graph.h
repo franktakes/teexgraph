@@ -32,7 +32,7 @@ const int MAXN = 10000000;
 // largest weakly (WCC) or strongly (SCC) connected component 
 enum Scope {
 
-    FULL, WCC, SCC
+    FULL, LWCC, LSCC
 };
 class Graph {
 
@@ -55,6 +55,8 @@ public:
     double averageDegree(const Scope);
     double density(const Scope);
     int nodes(const Scope);
+    int nodesInWcc(const int);
+    int wccOf(const int);
     int edges(const Scope);
     double reciprocity(const Scope scope);
     int selfEdges(const Scope scope);
@@ -98,10 +100,7 @@ protected:
     nodeidtype revMapNode(const int);
     void sortEdgeList();
 
-    vector<int> wccId; // WCC # of node i
-    vector<int> wccNodes; // nr. of nodes in WCC i			
-	
-//private:
+private:
 
     // graph data, always consistent
     int maxn = MAXN; // maximal number of nodes
@@ -128,8 +127,8 @@ protected:
     int largestSCC; // index of largest SCC 
     int wccs; // number of WCCs
     int sccs; // number of WCCs
-
-	
+    vector<int> wccId; // WCC # of node i
+    vector<int> wccNodes; // nr. of nodes in WCC i		
     vector<long> wccEdges; // nr. of edges in WCC i				
     vector<int> sccId; // SCC # of node i
     vector<int> sccNodes; // nr. of nodes in SCC i								

@@ -7,8 +7,8 @@
 // print distribution of values in an array
 template <typename Number>
 void printDistri(vector<Number> & values, const Scope scope = FULL) {
-    vector<Number> intarray(n, 0);
-    for(int i = 0; i < n; i++) {
+    vector<Number> intarray(n+1, 0);
+    for(int i = 0; i < (signed)values.size(); i++) {
         if(inScope(i, scope)) {
             intarray[values[i]]++;
         }
@@ -47,10 +47,10 @@ void printList(vector<Number> & values) {
 template <typename Number>
 void printNodeList(vector<Number> & values, const Scope scope = FULL) {
     vector<int> emptyfilter(n, 0);
-    if(scope == SCC)
-        printFilteredNodeList(values, SCC, largestSCC);
-    else if(scope == WCC)
-        printFilteredNodeList(values, WCC, largestWCC);
+    if(scope == LSCC)
+        printFilteredNodeList(values, LSCC, largestSCC);
+    else if(scope == LWCC)
+        printFilteredNodeList(values, LWCC, largestWCC);
     else if(scope == FULL)
         printFilteredNodeList(values, emptyfilter, 0);
 } // printNodeList
