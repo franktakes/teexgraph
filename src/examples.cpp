@@ -4,6 +4,9 @@
  * Examples of how to use the code
  */
 
+#include "examples.h"
+#include <iostream>
+using namespace std;
 
 // show basic stats of the network
 void stats(BDGraph & G) {

@@ -6,7 +6,8 @@
 
 CXX          = g++
 LDFLAGS      = -Iinclude
-CXXFLAGS     = -pedantic -Wall -march=native -fopenmp
+CXXFLAGS     = -pedantic -Wall -march=native -fopenmp 
+LISTENERFLAG = -Drunlistener=1
 DEBUGFLAGS   = -O0 -ggdb3 -Wextra 
 RELEASEFLAGS = -O3 -DNDEBUG #-fwhole-program
 PROFILEFLAGS = $(RELEASFLAGS) -pg
@@ -24,9 +25,8 @@ BINDIR       = $(PREFIX)/bin
 
 all: release
 
-
-listener: $(OBJECTS) main_listener.o
-	$(CXX) $(LDFLAGS) $(CXXFLAGS) -o $(TARGET) $(OBJECTS)
+listener: CXXFLAGS += $(LISTENERFLAG)
+listener: $(TARGET)
 
 release: CXXFLAGS += $(RELEASEFLAGS)
 release: $(TARGET)
