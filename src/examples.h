@@ -6,4 +6,4 @@
 
 #include "BDGraph.h"
 
-void stats(BDGraph & G);
+void stats(Graph & G);

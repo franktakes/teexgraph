@@ -9,7 +9,7 @@
 using namespace std;
 
 // show basic stats of the network
-void stats(BDGraph & G) {
+void stats(Graph & G) {
     const int LEFTWIDTH = 40;
 
     // the following metrics are linear in computation time and "free" to show"
@@ -22,15 +22,15 @@ void stats(BDGraph & G) {
     clog << setw(LEFTWIDTH) << "Density: " << G.density(FULL) << endl;
 
     // the following metrics are not linear in computation time
-    /*
+    
     if(!G.isUndirected())
-        clog << setw(LEFTWIDTH) << "Reciprocity: " << reciprocity(FULL) << endl;
+        clog << setw(LEFTWIDTH) << "Reciprocity: " << G.reciprocity(FULL) << endl;
     clog << setw(LEFTWIDTH) << "Triangles: " << G.triangles() << endl;
     clog << setw(LEFTWIDTH) << "Wedges: " << G.wedges() << endl;
     clog << setw(LEFTWIDTH) << "Graph clustering coefficient: " << G.graphClusteringCoefficient(FULL) << endl;
     clog << setw(LEFTWIDTH) << "Average local clustering coefficient: " << G.averageClusteringCoefficient(FULL) << endl;
-    clog << setw(LEFTWIDTH) << "Average distance: " << G.averageDistance(FULL, 1000) << endl;
-    */
+    clog << setw(LEFTWIDTH) << "Average distance: " << G.averageDistance(FULL, 1) << endl;
+    
 
     clog << endl;
     clog << setw(LEFTWIDTH) << "Sorted & unique edge lists: " << (G.isSortedAndUnique() ? "Yes" : "No") << endl;

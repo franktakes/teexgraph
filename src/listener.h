@@ -4,5 +4,6 @@
  * Listener for standard input/output dialogs with the code
  */
 
+#include "Graph.h"
 
-int listener();
+int listener(Graph &);

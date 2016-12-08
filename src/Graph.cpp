@@ -874,6 +874,12 @@ vector<int> & Graph::revNeighbors(const int i) {
     return rE[i];
 } // revNeighbors
 
+// check if graph is loaded
+bool Graph::isLoaded() {
+    return loaded;
+} // isUndirected
+
+
 // check if graph is undirected
 bool Graph::isUndirected() {
     return undirected;

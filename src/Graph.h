@@ -54,8 +54,10 @@ class Graph {
     // basic topology
     double averageDegree(const Scope);
     double density(const Scope);
+    long edges(const Scope);
     vector<int> & neighbors(const int);
     int nodes(const Scope);
+    int nodesInScc(const int);    
     int nodesInWcc(const int);
     double reciprocity(const Scope scope);
     vector<int> & revNeighbors(const int);
@@ -65,7 +67,7 @@ class Graph {
     int wccOf(const int);
     
     // status
-    long edges(const Scope);
+    bool isLoaded();    
     bool isUndirected();
     bool isSortedAndUnique();    
     bool sccComputed();
@@ -90,7 +92,27 @@ class Graph {
     // distance metrics
     int distance(const int, const int);
     double averageDistance(const Scope, const double);
-
+    
+    // BoundingDiameters functions
+    int centerSizeBD();
+    int diameterAPSP();
+    int diameterBD();
+    vector<int> eccentricitiesAPSP();
+    vector<int> eccentricitiesBD();
+    int peripherySizeBD();
+    int radiusAPSP();
+    int radiusBD();
+    
+	// centrality
+    vector<double> betweennessCentrality(const Scope, const double);
+    vector<double> closenessCentrality(const Scope, const double);
+    vector<double> degreeCentrality();
+    vector<double> eccentricityCentrality(const Scope);
+    vector<double> indegreeCentrality();
+    vector<double> outdegreeCentrality();
+    vector<double> pageRankCentrality();
+	
+	
   protected:
 
     bool addEdge(const int, const int);
@@ -138,6 +160,24 @@ class Graph {
     vector<int> sccId; // SCC # of node i
     vector<int> sccNodes; // nr. of nodes in SCC i								
     vector<long> sccEdges; // nr. of edges in SCC i		
+    
+    // BoundingDiameters functions:
+    int eccentricity(const int);
+    int extremaBounding(const int, const bool);
+    int pruning();
+
+    // BoundingDiameters data:	
+    vector<int> d; // for distance computation
+    vector<int> pruned; // -1 if not pruned, 0 or larger value if pruned by that particular node
+    vector<int> ecc_lower; // lower eccentricity bounds
+    vector<int> ecc_upper; // upper eccentricity bounds
+    vector<bool> candidate; // candidate set for contributing to computing the extreme distance measures
+  
+	// centrality
+    double closeness(const int);
+    vector<int> closenesses(const int, vector<long> &);
+    int closenessSum(const int);
+	  
 };
 
 #endif /* GRAPH_H */

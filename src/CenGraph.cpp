@@ -1,29 +1,19 @@
 /*
  * teexGraph --- by Frank Takes --- https://github.com/franktakes/teexgraph
  * 
- * CenGraph.cpp
+ * Centrality metrics
  */
 
-#include "CenGraph.h"
-
-// constructor
-CenGraph::CenGraph() {
-}
-
-
-// constructor
-CenGraph::CenGraph(const int nmax) : BDGraph(nmax) {
-}
-
+#include "Graph.h"
 
 // Compute the closeness of node u - O(m)
-double CenGraph::closeness(const int u) {
+double Graph::closeness(const int u) {
     return((double) closenessSum(u)) / ((double) nodesInWcc(wccOf(u)));
 } // closeness
 
 
 // Compute the sum of distances to all other nodes of node u - O(m)
-int CenGraph::closenessSum(const int u) {
+int Graph::closenessSum(const int u) {
     int current, z;
     queue<int> q;
     vector<int> d(nodes(FULL), -1);
@@ -48,7 +38,7 @@ int CenGraph::closenessSum(const int u) {
 
 
 // parallel-ready function for closeness similar to distances()
-vector<int> CenGraph::closenesses(const int u, vector<long> & dtotals) {
+vector<int> Graph::closenesses(const int u, vector<long> & dtotals) {
     int current, z;
     queue<int> q;
     vector<int> d(nodes(FULL), -1);
@@ -73,7 +63,7 @@ vector<int> CenGraph::closenesses(const int u, vector<long> & dtotals) {
 
 
 // compute all closeness centrality values in parallel
-vector<double> CenGraph::closenessCentrality(const Scope scope = LWCC, const double inputsamplesize = 1.0) {
+vector<double> Graph::closenessCentrality(const Scope scope = LWCC, const double inputsamplesize = 1.0) {
 
     if(!isUndirected() || scope == LSCC || nodes(scope) < 2) {
         cerr << "Closeness centrality is only implemented for undirected graphs. Valid scopes are FULL and LWCC." << endl;
@@ -140,12 +130,12 @@ vector<double> CenGraph::closenessCentrality(const Scope scope = LWCC, const dou
 } // closenessCentrality
 
 // degreeCentrality
-vector<double> CenGraph::degreeCentrality() {
+vector<double> Graph::degreeCentrality() {
     return outdegreeCentrality();
 }
 
 // outdegreeCentrality
-vector<double> CenGraph::outdegreeCentrality() {
+vector<double> Graph::outdegreeCentrality() {
     vector<double> outDeg(nodes(FULL)); // outdegrees    
     for(int i = 0; i < nodes(FULL); i++) {
         outDeg[i] = (signed)neighbors(i).size();
@@ -154,7 +144,7 @@ vector<double> CenGraph::outdegreeCentrality() {
 } // outdegreeCentrallity
 
 // indegreeCentrality
-vector<double> CenGraph::indegreeCentrality() {
+vector<double> Graph::indegreeCentrality() {
     vector<double> inDeg(nodes(FULL)); // indegrees
     for(int i = 0; i < nodes(FULL); i++) {
         inDeg[i] = (signed)revNeighbors(i).size();
@@ -163,7 +153,7 @@ vector<double> CenGraph::indegreeCentrality() {
 } // indegreeCentrality
 
 // eccentricityCentrality
-vector<double> CenGraph::eccentricityCentrality(const Scope scope = FULL) {
+vector<double> Graph::eccentricityCentrality(const Scope scope = FULL) {
     if(!isUndirected() || scope == LSCC || nodes(scope) < 2) {
         cerr << "Eccentricity centrality is only implemented for undirected graphs. Valid scopes are FULL and LWCC." << endl;
         return vector<double>(nodes(FULL), -1);
@@ -179,7 +169,7 @@ vector<double> CenGraph::eccentricityCentrality(const Scope scope = FULL) {
 }
 
 // Compute betweenness centrality cf. Brandes 2001 algorithm
-vector<double> CenGraph::betweennessCentrality(const Scope scope = FULL, const double samplesize = 1.0) {
+vector<double> Graph::betweennessCentrality(const Scope scope = FULL, const double samplesize = 1.0) {
 
     if(!isUndirected() || scope == LSCC || nodes(scope) < 2) {
         cerr << "Betweenness centrality is only implemented for undirected graphs. Valid scopes are FULL and LWCC." << endl;
@@ -284,7 +274,7 @@ vector<double> CenGraph::betweennessCentrality(const Scope scope = FULL, const d
 
 
 // pageRankCentrality
-vector<double> CenGraph::pageRankCentrality() {
+vector<double> Graph::pageRankCentrality() {
 
     const double d = 0.85; // dampening factor
     const int iterations = 100;

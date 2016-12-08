@@ -14,20 +14,10 @@
  *
  */
 
-#include "BDGraph.h"
-
-// constructor
-BDGraph::BDGraph() {
-}
-
-
-// constructor
-BDGraph::BDGraph(const int nmax) : Graph(nmax) {
-
-}
+#include "Graph.h"
 
 // compute the eccentricity of node u - O(m)
-int BDGraph::eccentricity(const int u) {
+int Graph::eccentricity(const int u) {
     int current, z, ecc = 0;
     queue<int> q;
     d.assign(nodes(FULL), -1);
@@ -51,7 +41,7 @@ int BDGraph::eccentricity(const int u) {
 
 
 // compute the diameter of the WCC, brute-force (APSP) - O(mn)
-int BDGraph::diameterAPSP() {
+int Graph::diameterAPSP() {
     pruned.assign(nodes(FULL), -1);
     computeWCC();
     int diameter = 0;
@@ -68,7 +58,7 @@ int BDGraph::diameterAPSP() {
 
 
 // compute the radius of the WCC, brute-force (APSP) - O(mn)
-int BDGraph::radiusAPSP() {
+int Graph::radiusAPSP() {
     pruned.assign(nodes(FULL), -1);
     computeWCC();
     int rad = nodes(FULL);
@@ -85,7 +75,7 @@ int BDGraph::radiusAPSP() {
 
 
 // pruning strategy
-int BDGraph::pruning() {
+int Graph::pruning() {
     int z, count = 0, prunee = -1;
     pruned.assign(nodes(FULL), -1);
 
@@ -116,21 +106,21 @@ int BDGraph::pruning() {
 
 
 // compute the graph's WCC diameter using BoundingDiameters
-int BDGraph::diameterBD() {
+int Graph::diameterBD() {
     const bool PRUNE = true;
     return extremaBounding(1, PRUNE);
 } // diameterBD
 
 
 // compute the graph's WCC radius using BoundingDiameters
-int BDGraph::radiusBD() {
+int Graph::radiusBD() {
     const bool PRUNE = true;
     return extremaBounding(2, PRUNE);
 } // radiusBD
 
 
 // get the eccentricities of each of the nodes in the WCC of the graph
-vector<int> BDGraph::eccentricitiesBD() {
+vector<int> Graph::eccentricitiesBD() {
     const bool PRUNE = true;
     extremaBounding(3, PRUNE);
     return ecc_lower;
@@ -138,7 +128,7 @@ vector<int> BDGraph::eccentricitiesBD() {
 
 
 // get the eccentricities of each of the nodes in the WCC of the graph brute force
-vector<int> BDGraph::eccentricitiesAPSP() {
+vector<int> Graph::eccentricitiesAPSP() {
     pruned.assign(nodes(FULL), -1);
     vector<int> intarray(nodes(FULL), 0);
     for(int i = 0; i < nodes(FULL); i++) {
@@ -148,21 +138,21 @@ vector<int> BDGraph::eccentricitiesAPSP() {
 } // eccentricitiesAPSP
 
 // compute the graph's WCC's periphery using BoundingDiameters
-int BDGraph::peripherySizeBD() {
+int Graph::peripherySizeBD() {
     const bool PRUNE = true;
     return extremaBounding(4, PRUNE);
 } // peripheryBD
 
 
 // compute the graph's WCC's center using BoundingDiameters
-int BDGraph::centerSizeBD() {
+int Graph::centerSizeBD() {
     const bool PRUNE = true;
     return extremaBounding(5, PRUNE);
 } // centerBD
 
 
 // compute extreme distance values in the WCC using BoundingDiameters
-int BDGraph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
+int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
 
     if(!isUndirected() || nodes(LWCC) < 2) {
         cerr << "BoundingDiameters is only implemented for undirected graphs' scope LWCC." << endl;
@@ -281,7 +271,7 @@ int BDGraph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
                     minlowernode = i;
                 if(maxuppernode == -1)
                     maxuppernode = i;
-                else if(ecc_upper[i] == ecc_upper[maxuppernode] && neighbors(i).size() > neighbors(minlowernode).size())
+                else if(ecc_upper[i] == ecc_upper[maxuppernode] && neighbors(i).size() > neighbors(maxuppernode).size())
                     maxuppernode = i;
                 else if(ecc_upper[i] > ecc_upper[maxuppernode])
                     maxuppernode = i;
