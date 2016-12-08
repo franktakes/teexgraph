@@ -22,7 +22,7 @@ void stats(Graph & G) {
     clog << setw(LEFTWIDTH) << "Density: " << G.density(FULL) << endl;
 
     // the following metrics are not linear in computation time
-    
+    /*
     if(!G.isUndirected())
         clog << setw(LEFTWIDTH) << "Reciprocity: " << G.reciprocity(FULL) << endl;
     clog << setw(LEFTWIDTH) << "Triangles: " << G.triangles() << endl;
@@ -30,7 +30,7 @@ void stats(Graph & G) {
     clog << setw(LEFTWIDTH) << "Graph clustering coefficient: " << G.graphClusteringCoefficient(FULL) << endl;
     clog << setw(LEFTWIDTH) << "Average local clustering coefficient: " << G.averageClusteringCoefficient(FULL) << endl;
     clog << setw(LEFTWIDTH) << "Average distance: " << G.averageDistance(FULL, 1) << endl;
-    
+    */
 
     clog << endl;
     clog << setw(LEFTWIDTH) << "Sorted & unique edge lists: " << (G.isSortedAndUnique() ? "Yes" : "No") << endl;
