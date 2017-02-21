@@ -175,8 +175,15 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
     bool high = true;
 
     // perform pruning
+    pruned.assign(nodes(FULL), -1);    
     if(PRUNE)
         candidates -= pruning();
+
+    // initialize min/max values
+    minlower = nodes(LWCC);
+    maxlower = 0;
+    minupper = nodes(LWCC);
+    maxupper = 0;
 
     // start the main loop
     while(candidates > 0) {
@@ -213,17 +220,13 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
         // output some status info (1)			
         if(TYPE != 3 || candidates % (1 + (nodes(LWCC) / 100)) == 0) {
             cerr << setw(3) << it
-                    << ". Current: " << setw(8) << current
+                    << ". Current: " << setw(8) << revMapNode(current)
                     << " (" << ecc_lower[current] << "/"
                     << ecc_upper[current] << ") -> ";
             showstatus = true;
         }
 
         // initialize min/max values
-        minlower = nodes(LWCC);
-        maxlower = 0;
-        minupper = nodes(LWCC);
-        maxupper = 0;
         maxuppernode = -1;
         minlowernode = -1;
 
