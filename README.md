@@ -39,7 +39,6 @@ Of course, all credit goes to the original authors of these algorithms.
 
 * Install using `make` and then run the executable `teexgraph`. 
 * The main way of using this code is by running the required code directly from C++. Consult the [main.cpp](src/main.cpp) and [examples.cpp](src/examples.cpp) files for examples of how to use the code. Alternatively, there is experimental alpha-stage functionality to talk to the code through a ["listener"](https://github.com/franktakes/teexgraph/wiki/teexGraph-Listener). It interprets commands from the user interactively, and it can be called for example from Python. 
- that . 
 * The library supports networks with up to INT_MAX (2 billion) nodes and as many edges as the memory of your machine can hold. If you want to have more than 10 million nodes or just want to optimize memory usage, pass some integer equal to or greater than the expected node count as one integer parameter to the constructor. 
 * The program expects a whitespace-separated edge list (indicated by node pairs) as input format. By default, it assumes nodes of the type `long`. This can be changed to for example `string` in [Graph.h](src/main.cpp) at the cost of a factor 2 or more in loading speed. Friendly input files are expected; although comments (lines that do not start with a character in [a-zA-Z0-9]) at the beginning of the input file are allowed. After the first line with an edge, only edges are expected.
 
