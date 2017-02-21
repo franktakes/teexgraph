@@ -179,11 +179,6 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
     if(PRUNE)
         candidates -= pruning();
 
-    // initialize min/max values
-    minlower = nodes(LWCC);
-    maxlower = 0;
-    minupper = nodes(LWCC);
-    maxupper = 0;
 
     // start the main loop
     while(candidates > 0) {
@@ -229,6 +224,11 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
         // initialize min/max values
         maxuppernode = -1;
         minlowernode = -1;
+		// initialize min/max values
+		minlower = nodes(LWCC);
+		maxlower = 0;
+		minupper = nodes(LWCC);
+		maxupper = 0;        
 
         // update bounds
         for(int i = 0; i < nodes(FULL); i++) {
