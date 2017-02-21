@@ -91,6 +91,8 @@ class Graph {
 
     // distance metrics
     int distance(const int, const int);
+    vector<int> distances(const int, vector<long> &);
+	vector<int> alldistances(const int);
     double averageDistance(const Scope, const double);
     
     // BoundingDiameters functions
@@ -116,7 +118,6 @@ class Graph {
   protected:
 
     bool addEdge(const int, const int);
-    vector<int> distances(const int, vector<long> &);    
     bool edge(const int, const int);
     bool edgeSlow(const int, const int);
     void goMarkSCC(const int, const int);

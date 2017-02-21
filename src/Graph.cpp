@@ -761,6 +761,28 @@ int Graph::distance(const int u, const int v) {
     return d[v];
 } // distance
 
+// compute and return all distances from node u --- O(m) 
+vector<int> Graph::alldistances(const int u) {
+    int current, z;
+    queue<int> q;
+    vector<int> d(n, -1);
+
+    d[u] = 0;
+    q.push(u);
+    while(!q.empty()) {
+        current = q.front();
+        q.pop();
+        z = E[current].size();
+        for(int j = 0; j < z; j++) {
+            if(d[E[current][j]] == -1) {
+                d[E[current][j]] = d[current] + 1;
+                q.push(E[current][j]);
+            }
+        }
+    }
+    return d;
+} // alldistances
+
 
 // parallel-ready function to compute all distances and update dtotals
 vector<int> Graph::distances(const int u, vector<long> & dtotals) {
