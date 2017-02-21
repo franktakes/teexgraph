@@ -11,7 +11,7 @@ using namespace std;
 // if compiled with "make listener", start the listener and ignore this file
 #if runlistener == 1
 #include "listener.h"
-int main(const int argc, const char* argv[]) { Graph G(100000); return listener(G); }
+int main(const int argc, const char* argv[]) { Graph G; return listener(G); }
 
 #else
 

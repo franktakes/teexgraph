@@ -105,7 +105,6 @@ template <typename Number>
 void printPythonNodeList(vector<Number> & values, const Scope scope = FULL, string filename = "") {
     //ofstream myFile;
     //myFile.open (filename.c_str(), ios::binary);
-    clog << sizeof (double) << " bytes = size of double" << endl;
     FILE* myFile;
     myFile = fopen(filename.c_str(), "wb");
     Number total = 0;
