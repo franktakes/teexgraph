@@ -20,6 +20,9 @@ int listener(Graph & G) {
             "- Graphs up to MAXN = " << MAXN << " nodes are accepted" << endl;
 
 	string command, par, par2;
+	string outputFile = "temp.bin";
+    bool fileOutput = false;
+
 	Scope scope; 
 	vector<long> templong;
 	vector<double> tempdouble;
@@ -41,20 +44,21 @@ int listener(Graph & G) {
 			// determine scope
 			scope = FULL;
 			if(command.length() > 4) {
-				string temp = command.substr(0,4);
-				if(temp == "wcc_") {
+				string scopePrefix = command.substr(0,4);
+				if(scopePrefix == "wcc_") {
 					scope = LWCC;
 					command = command.substr(4, command.length()-4);
 				}
-				else if(temp == "scc_") {
+				else if(scopePrefix == "scc_") {
 					scope = LSCC;
 					command = command.substr(4, command.length()-4);					
 				}
 			} 
 		
-			if(0); 
-			
-			//////////////////////////////////////////// parameter free commands
+			if(0)
+                ; 
+
+			///////////////////////////////////////////////////////////// values
 			else if(command == "nodes") 
 				cout << G.nodes(scope) << endl;
 			else if(command == "edges") 
@@ -67,7 +71,8 @@ int listener(Graph & G) {
 				cout << G.reciprocity(scope) << endl;		
 			else if(command == "averagedegree") 
 				cout << G.averageDegree(scope) << endl;				
-			else if(command == "average_local_clustering" || command == "avg_local_clustering") 
+			else if(command == "average_local_clustering" || 
+                    command == "avg_local_clustering") 
 				cout << G.averageClusteringCoefficient(scope) << endl;
 			else if(command == "graph_clustering") 
 				cout << G.graphClusteringCoefficient(scope) << endl;
@@ -79,117 +84,127 @@ int listener(Graph & G) {
 				cout << G.centerSizeBD() << endl;
 			else if(command == "periphery") // wcc only
 				cout << G.peripherySizeBD() << endl;
+			else if(command == "distance") {
+				cin >> par >> par2;			
+				cout << G.distance(atoi(par.c_str()), atoi(par2.c_str())) << endl;
+			}
+			else if(command == "stats") 
+				cerr << "This command is depricated." << endl;	
+
+            /////////////////////////////////////////////////////  distributions				
+			else if(command == "wccsize_distri") { 
+				tempint = G.wccSizeDistribution();
+				G.printDistri(tempint, scope);
+			}					
+			else if(command == "sccsize_distri") { 
+				tempint = G.sccSizeDistribution();
+				G.printDistri(tempint, scope);
+			}	
+			else if(command == "deg_distri") {
+				templong = G.outdegreeDistribution(scope);
+				G.printDistri(templong, scope);
+			}	
 			else if(command == "dist_distri") {
 				templong = G.distanceDistribution(scope, 1);
 				G.printList(templong);	
-			}	
-			
-			///////////////////////////////////////////// parameterized commands			
-			else if(command == "distance") {
-				cin >> par >> par2;			
-				cout << G.distance(atoi(par.c_str()), atof(par2.c_str())) << endl;
-			}	
-			else if(command == "distances") {
-				cin >> par >> par2;		
-				tempint = G.alldistances(atoi(par.c_str()));
-				G.printPythonNodeList(tempint, scope, par2.c_str());					
-			}									
-
+			}
 			else if(command == "est_dist_distri") {
 				cin >> par;
 				templong = G.distanceDistribution(scope, atof(par.c_str()));
 				G.printList(templong);			
-			}				
-			
-			
-			
-			
-			// TODO continue migrating stuff below to new format
-			
-			// components
-			else if(command == "output_wcc") {
-				//G.outputWCCNodes();		
+			}
+			else if(command == "eccentricity_distri") { // wcc only
+				tempint = G.eccentricitiesBD(); 
+				G.printDistri(tempint, LWCC);
 			}	
-			else if(command == "wcc_distri") {
-				//G.printDistri(WCCNodes, false);
-			}			
-			else if(command == "scc_distri") {
-				//G.printDistri(SCCNodes, false);
-			}				
-		
-			// stats
-			else if(command == "stats") 
-				;//stats();			
-			
-			else if(command == "adj_list") {
-				//cin >> par >> filenamepar;
-				//getAdjacencyList(atoi(par.c_str()), filenamepar);		
-			}		
-			else if(command == "avg_neighbor_degree") {
-				//cin >> par >> filenamepar;
-				//tempdouble = avgNeighborDegree(atoi(par.c_str()));
-				//printPythonNodeList(tempdouble, atoi(par.c_str()), filenamepar);
-			}		
-			else if(command == "avg_neighbor_local_clustering") {
-				//cin >> par >> filenamepar;
-				//tempdouble = avgNeighborLocalClustering(atoi(par.c_str()));
-				//printPythonNodeList(tempdouble, atoi(par.c_str()), filenamepar);
-			}		
-				
-			// clustering
-			else if(command == "local_clustering") {
-				//cin >> par >> filenamepar;
-				//tempdouble = localClustering(atoi(par.c_str()));
-				//printPythonNodeList(tempdouble, atoi(par.c_str()), filenamepar);
+
+            ///////////////////////////////////////////////// (Python) nodelists
+            else if(command == "local_clustering") {
+				tempdouble = G.localClustering(scope);
+				if(fileOutput) 
+                    G.printPythonNodeList(tempdouble, scope, outputFile);
+                else
+                    G.printNodeList(tempdouble, scope);
 			}	
-			
-			else if(command == "deg_distri") {
-				cin >> par;				
-				//printDistri(outDeg, atoi(par.c_str()));
-			}					
-		
-			////////////////////////////////////////////////////////// distances			
-
-
-		
-			// TODO function for average of distri			
-		
-			// extreme distances
-			else if(command == "eccentricity_distri") {
-				//tempint = eccentricitiesBD(); 
-				//printDistri(tempint, true);
-			}									
-					
-				
-			// centrality
-			else if(command == "degree_centrality" || command == "outdegree1 _centrality") {
-				//cin >> par >> filenamepar;				
-				//printPythonNodeList(outDeg, atoi(par.c_str()), filenamepar); 
+	
+			else if(command == "degree_centrality" || 
+                    command == "outdegree_centrality") {
+				if(fileOutput) 
+                    G.printPythonNodeList(tempdouble, scope, outputFile);
+                else
+                    G.printNodeList(tempdouble, scope);
 			}
 			else if(command == "indegree_centrality") {
-				//cin >> par >> filenamepar;				
-				//printPythonNodeList(inDeg, atoi(par.c_str()), filenamepar);
+				tempdouble = G.indegreeCentrality();
+				if(fileOutput) 
+                    G.printPythonNodeList(templong, scope, outputFile);
+                else
+                    G.printNodeList(templong, scope);
 			}		
 			else if(command == "eccentricity_centrality") {
-				//tempint = eccentricitiesBD(); 
-				//printPythonNodeList(tempint, true, filenamepar);			
+				tempdouble = G.eccentricityCentrality(scope);
+				if(fileOutput) 
+                    G.printPythonNodeList(templong, scope, outputFile);
+                else
+                    G.printNodeList(templong, scope);
 			}
 			else if(command == "closeness_centrality")	{
-				//cin >> par >> filenamepar;				
-				//tempdouble = closenessCentrality(atoi(par.c_str())); 
-				//printPythonNodeList(tempdouble, atoi(par.c_str()), filenamepar);
+				tempdouble = G.closenessCentrality(scope, 1);
+				if(fileOutput) 
+                    G.printPythonNodeList(templong, scope, outputFile);
+                else
+                    G.printNodeList(templong, scope);
 			}
-			else if(command == "est_closeness_centrality")	{
-				cerr << "Not yet implemented in wrapper." << endl;
-			}		
 			else if(command == "betweenness_centrality")	{
-				//cin >> par >> filenamepar;				
-				//tempdouble = betweennessCentrality(atof(par.c_str()), 1.0);
-				//printPythonNodeList(tempdouble, atoi(par.c_str()), filenamepar);
+				tempdouble = G.betweennessCentrality(scope, 1);
+				if(fileOutput) 
+                    G.printPythonNodeList(templong, scope, outputFile);
+                else
+                    G.printNodeList(templong, scope);
 			}
+	
+			else if(command == "distances") {
+				cin >> par;		
+				tempint = G.alldistances(atoi(par.c_str()));
+				if(fileOutput) 
+                    G.printPythonNodeList(tempint, scope, outputFile);
+                else
+                    G.printNodeList(tempint, scope);
+			}			
 			else if(command == "est_betweenness_centrality")	{
-				cerr << "Not yet implemented in wrapper." << endl;
-			}					
+				cin >> par;
+				tempdouble = G.betweennessCentrality(scope, atof(par.c_str()));
+				if(fileOutput) 
+                    G.printPythonNodeList(tempdouble, scope, outputFile);
+                else
+                    G.printNodeList(tempdouble, scope);
+			}		
+			else if(command == "est_closeness_centrality") {
+				cin >> par;
+				tempdouble = G.closenessCentrality(scope, atof(par.c_str()));
+				if(fileOutput) 
+                    G.printPythonNodeList(tempdouble, scope, outputFile);
+                else
+                    G.printNodeList(tempdouble, scope);
+			}			
+			else if(command == "binary_adj_list" || command == "adj_list") {
+				cin >> par;
+				G.writeBinaryAdjacencyList(scope, outputFile);		
+			}	
+
+            ///////////////////////////////////////////////// change output type
+
+			else if(command == "set_binay_file_output") {
+				clog << "Enter 0 for standard cout output or a filename for binary output (nodelists and nodevalues only): ";
+				cin >> par;		
+                fileOutput = true;
+                if(atoi(par.c_str()) == 0)
+                    fileOutput = false;
+                else
+    				outputFile = par;
+			}		
+
+            ////////////////////////////////////////////////////////////////////		
 
 			else {
 				cerr << "Command not recognized." << endl;

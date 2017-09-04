@@ -26,7 +26,7 @@ using namespace std;
 typedef long nodeidtype;
 
 // default max. node count; change here or by passing int to Graph constructor
-const int MAXN = 10000000;
+const int MAXN = 200000;
 
 // diferent scopes at which we can call functions: on the FULL network, on the
 // largest weakly (WCC) or strongly (SCC) connected component 
@@ -84,10 +84,10 @@ class Graph {
 
     // distances, degree and compont size distributions
     vector<long> distanceDistribution(const Scope, const double);
-    void indegreeDistribution(const Scope);
-    void outdegreeDistribution(const Scope);
-    void sccSizeDistribution();
-    void wccSizeDistribution();
+    vector<long> indegreeDistribution(const Scope);
+    vector<long> outdegreeDistribution(const Scope);
+    vector<int> sccSizeDistribution();
+    vector<int> wccSizeDistribution();
 
     // distance metrics
     int distance(const int, const int);
@@ -114,7 +114,9 @@ class Graph {
     vector<double> outdegreeCentrality();
     vector<double> pageRankCentrality();
 	
-	
+    // listener stuff
+    void writeBinaryAdjacencyList(const Scope, string);
+
   protected:
 
     bool addEdge(const int, const int);
@@ -122,7 +124,6 @@ class Graph {
     bool edgeSlow(const int, const int);
     void goMarkSCC(const int, const int);
     void goVisitSCC(const int, vector<bool> &, stack<int> &, vector<int> &, vector<int> &);
-    bool inScope(const int, const Scope);
     void makeUndirected();
     int mapNode(const nodeidtype);
     nodeidtype revMapNode(const int);

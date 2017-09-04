@@ -708,32 +708,36 @@ double Graph::graphClusteringCoefficient(const Scope scope = FULL) {
 
 
 // distribution of weakly connected component sizes
-void Graph::wccSizeDistribution() {
-    printDistri(wccNodes, LWCC);
-    clog << "WCC size distribution printed." << endl;
+vector<int> Graph::wccSizeDistribution() {
+    //printDistri(wccNodes, LWCC);
+    //clog << "WCC size distribution printed." << endl;
+	return wccNodes;
 } // wccSizeDistribution
 
-
 // distribution of strongly connected component sizes
-void Graph::sccSizeDistribution() {
-    printDistri(sccNodes, LSCC);
-    clog << "SCC size distribution printed." << endl;
+vector<int> Graph::sccSizeDistribution() {
+    //printDistri(sccNodes, LSCC);
+    //clog << "SCC size distribution printed." << endl;
+	return sccNodes;
 } // sccSizeDistribution
-void Graph::outdegreeDistribution(const Scope scope = FULL) {
+
+vector<long> Graph::outdegreeDistribution(const Scope scope = FULL) {
     vector<long> outDeg(n); // outdegrees    
     for(int i = 0; i < n; i++) {
         outDeg[i] = (signed)E[i].size();
     }
-    printDistri(outDeg, scope);
-    clog << "Outdegree distribution printed." << endl;
+    //printDistri(outDeg, scope);
+    //clog << "Outdegree distribution printed." << endl;
+    return outDeg;
 } // outdegreeDistribution
-void Graph::indegreeDistribution(const Scope scope = FULL) {
+vector<long> Graph::indegreeDistribution(const Scope scope = FULL) {
     vector<long> inDeg(n); // indegrees
     for(int i = 0; i < n; i++) {
         inDeg[i] = (signed)rE[i].size();
     }
-    printDistri(inDeg, scope);
-    clog << "Indegree distribution printed." << endl;
+    //printDistri(inDeg, scope);
+    //clog << "Indegree distribution printed." << endl;
+	return inDeg;
 } // indegreeDistribution
 
 
@@ -931,3 +935,21 @@ int Graph::wccCount() {
 int Graph::sccCount() {
     return sccs;
 } // sccComputed
+
+// write binary adjacency list to file
+void Graph::writeBinaryAdjacencyList(const Scope scope = FULL, string filename = "") {
+    FILE* myFile;
+    myFile = fopen(filename.c_str(), "wb");
+	
+	for(int i=0; i<n; i++) {
+        if(inScope(i, scope)) {
+			for(int j=0; j<(signed)E[i].size(); j++)
+                if(inScope(E[i][j], scope)) {
+					int x = revMapNode(E[i][j]);
+					fwrite(&x,sizeof(int),1,myFile);
+				}
+		}
+	}
+	fclose(myFile);
+} // getBinaryAdjacencyList
+
