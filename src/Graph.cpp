@@ -945,7 +945,7 @@ void Graph::writeBinaryAdjacencyList(const Scope scope = FULL, string filename =
         if(inScope(i, scope)) {
 			for(int j=0; j<(signed)E[i].size(); j++)
                 if(inScope(E[i][j], scope)) {
-					int x = revMapNode(E[i][j]);
+					nodeidtype x = revMapNode(E[i][j]);
 					fwrite(&x,sizeof(int),1,myFile);
 				}
 		}

@@ -129,7 +129,8 @@ int listener(Graph & G) {
 	
 			else if(command == "degree_centrality" || 
                     command == "outdegree_centrality") {
-				if(fileOutput) 
+				tempdouble = G.outdegreeCentrality();				
+                if(fileOutput) 
                     G.printPythonNodeList(tempdouble, scope, outputFile);
                 else
                     G.printNodeList(tempdouble, scope);
@@ -137,30 +138,30 @@ int listener(Graph & G) {
 			else if(command == "indegree_centrality") {
 				tempdouble = G.indegreeCentrality();
 				if(fileOutput) 
-                    G.printPythonNodeList(templong, scope, outputFile);
+                    G.printPythonNodeList(tempdouble, scope, outputFile);
                 else
-                    G.printNodeList(templong, scope);
+                    G.printNodeList(tempdouble, scope);
 			}		
 			else if(command == "eccentricity_centrality") {
 				tempdouble = G.eccentricityCentrality(scope);
 				if(fileOutput) 
-                    G.printPythonNodeList(templong, scope, outputFile);
+                    G.printPythonNodeList(tempdouble, scope, outputFile);
                 else
-                    G.printNodeList(templong, scope);
+                    G.printNodeList(tempdouble, scope);
 			}
 			else if(command == "closeness_centrality")	{
 				tempdouble = G.closenessCentrality(scope, 1);
 				if(fileOutput) 
-                    G.printPythonNodeList(templong, scope, outputFile);
+                    G.printPythonNodeList(tempdouble, scope, outputFile);
                 else
-                    G.printNodeList(templong, scope);
+                    G.printNodeList(tempdouble, scope);
 			}
 			else if(command == "betweenness_centrality")	{
 				tempdouble = G.betweennessCentrality(scope, 1);
 				if(fileOutput) 
-                    G.printPythonNodeList(templong, scope, outputFile);
+                    G.printPythonNodeList(tempdouble, scope, outputFile);
                 else
-                    G.printNodeList(templong, scope);
+                    G.printNodeList(tempdouble, scope);
 			}
 	
 			else if(command == "distances") {
