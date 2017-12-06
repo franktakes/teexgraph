@@ -26,7 +26,7 @@ using namespace std;
 typedef long nodeidtype;
 
 // default max. node count; change here or by passing int to Graph constructor
-const int MAXN = 200000;
+const int MAXN = 1000000;
 
 // diferent scopes at which we can call functions: on the FULL network, on the
 // largest weakly (WCC) or strongly (SCC) connected component 
@@ -43,6 +43,7 @@ class Graph {
     void clear();
     bool loadDirected(const string);
     bool loadUndirected(const string);
+	bool inScope(const int, const Scope);
 
     // components        
     void computeSCC();
