@@ -602,20 +602,21 @@ double Graph::averageClusteringCoefficient(const Scope scope = FULL) {
 
 
 // get triangle count (ignoring direction)
-long Graph::triangles() {
+long Graph::triangles(const Scope scope) {
     long grandtotal = 0;
     int tid;
     pair<long, long> result;
     const int cpus = omp_get_num_procs();
     vector<long> total(cpus, 0);
 #pragma omp parallel for schedule(dynamic, 1) private(tid,result)
-    for(int i = 0; i < n; i++) {
-        if(i % max(1, n / 20) == 0) // show status % without div by 0 errors
-            clog << " " << i / max(1, n / 100) << "%";
-        tid = omp_get_thread_num();
-        result = trianglesWedgesAround(i);
-        total[tid] += result.first;
-    }
+    for(int i = 0; i < n; i++) 
+        if(inScope(i, scope)) {	
+        	if(i % max(1, n / 20) == 0) // show status % without div by 0 errors
+            	clog << " " << i / max(1, n / 100) << "%";
+        	tid = omp_get_thread_num();
+       		result = trianglesWedgesAround(i);
+        	total[tid] += result.first;
+    	}
     clog << " Done." << endl;
     for(int i = 0; i < cpus; i++)
         grandtotal += total[i];
@@ -624,20 +625,21 @@ long Graph::triangles() {
 
 
 // get wedge count (ignoring direction)
-long Graph::wedges() {
+long Graph::wedges(const Scope scope) {
     long grandtotal = 0;
     int tid;
     pair<long, long> result;
     const int cpus = omp_get_num_procs();
     vector<long> total(cpus, 0);
 #pragma omp parallel for schedule(dynamic, 1) private(tid,result)
-    for(int i = 0; i < n; i++) {
-        if(i % max(1, n / 20) == 0) // show status % without div by 0 errors
+    for(int i = 0; i < n; i++) 
+        if(inScope(i, scope)) {	
+            if(i % max(1, n / 20) == 0) // show status % without div by 0 errors
             clog << " " << i / max(1, n / 100) << "%";
-        tid = omp_get_thread_num();
-        result = trianglesWedgesAround(i);
-        total[tid] += result.second;
-    }
+     	   tid = omp_get_thread_num();
+     	   result = trianglesWedgesAround(i);
+     	   total[tid] += result.second;
+    	}
     clog << " Done." << endl;
     for(int i = 0; i < cpus; i++)
         grandtotal += total[i];
@@ -951,5 +953,17 @@ void Graph::writeBinaryAdjacencyList(const Scope scope = FULL, string filename =
 		}
 	}
 	fclose(myFile);
+} // writeBinaryAdjacencyList
+/*
+// write binary adjacency list to file
+bool Graph::readBinaryAdjacencyList(string filename = "") {
+    FILE* myFile;
+    myFile = fopen(filename.c_str(), "rb");
+	// TODO Define x
+	
+	while(infile = fread(&x,myFile)) {
+		cerr << "readin" << endl;	fclose(myFile);
+		// TODO
+	}
 } // getBinaryAdjacencyList
-
+*/

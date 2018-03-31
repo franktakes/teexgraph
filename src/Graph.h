@@ -79,9 +79,9 @@ class Graph {
     double graphClusteringCoefficient(const Scope);
     vector<double> localClustering(const Scope);
     double nodeClusteringCoefficient(const int);
-    long triangles();
+    long triangles(const Scope);
     pair<long, long> trianglesWedgesAround(const int);
-    long wedges();
+    long wedges(const Scope);
 
     // distances, degree and compont size distributions
     vector<long> distanceDistribution(const Scope, const double);

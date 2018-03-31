@@ -132,7 +132,7 @@ vector<double> Graph::closenessCentrality(const Scope scope = LWCC, const double
 // degreeCentrality
 vector<double> Graph::degreeCentrality() {
     return outdegreeCentrality();
-}
+} // degreeCentrality
 
 // outdegreeCentrality
 vector<double> Graph::outdegreeCentrality() {
@@ -166,7 +166,7 @@ vector<double> Graph::eccentricityCentrality(const Scope scope = FULL) {
         else if(scope == FULL)
             centralities[i] = eccentricity(i);
     return centralities;
-}
+} // eccentricityCentrality
 
 // Compute betweenness centrality cf. Brandes 2001 algorithm
 vector<double> Graph::betweennessCentrality(const Scope scope = FULL, const double samplesize = 1.0) {
