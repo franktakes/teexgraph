@@ -119,7 +119,7 @@ void printPythonNodeList(vector<Number> & values, const Scope scope = FULL, stri
     }
     for(int i = 0; i < n; i++) {
         if(inScope(i, scope)) {
-            double tmp = revMapNode(i);
+            double tmp = 0; // TODO: make stringready. revMapNode(i);
             fwrite(&tmp, sizeof (double), 1, myFile);
             total += values[i];
             count += 1;

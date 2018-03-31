@@ -954,16 +954,4 @@ void Graph::writeBinaryAdjacencyList(const Scope scope = FULL, string filename =
 	}
 	fclose(myFile);
 } // writeBinaryAdjacencyList
-/*
-// write binary adjacency list to file
-bool Graph::readBinaryAdjacencyList(string filename = "") {
-    FILE* myFile;
-    myFile = fopen(filename.c_str(), "rb");
-	// TODO Define x
-	
-	while(infile = fread(&x,myFile)) {
-		cerr << "readin" << endl;	fclose(myFile);
-		// TODO
-	}
-} // getBinaryAdjacencyList
-*/
+

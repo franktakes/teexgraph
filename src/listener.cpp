@@ -69,6 +69,10 @@ int listener(Graph & G) {
 				cout << G.density(scope) << endl;		
 			else if(command == "reciprocity") 
 				cout << G.reciprocity(scope) << endl;		
+			else if(command == "triangles") 
+				cout << G.triangles(scope) << endl;
+			else if(command == "wedges") 
+				cout << G.wedges(scope) << endl;
 			else if(command == "averagedegree") 
 				cout << G.averageDegree(scope) << endl;				
 			else if(command == "average_local_clustering" || 
@@ -100,10 +104,14 @@ int listener(Graph & G) {
 				tempint = G.sccSizeDistribution();
 				G.printDistri(tempint, scope);
 			}	
-			else if(command == "deg_distri") {
+			else if(command == "deg_distri" || command == "outdeg_distri") {
 				templong = G.outdegreeDistribution(scope);
 				G.printDistri(templong, scope);
 			}	
+			else if(command == "indeg_distri") {
+				templong = G.indegreeDistribution(scope);
+				G.printDistri(templong, scope);
+			}				
 			else if(command == "dist_distri") {
 				templong = G.distanceDistribution(scope, 1);
 				G.printList(templong);	
@@ -156,6 +164,13 @@ int listener(Graph & G) {
                 else
                     G.printNodeList(tempdouble, scope);
 			}
+			else if(command == "pagerank_centrality")	{
+				tempdouble = G.pageRankCentrality();
+				if(fileOutput) 
+                    G.printPythonNodeList(tempdouble, scope, outputFile);
+                else
+                    G.printNodeList(tempdouble, scope);
+			}			
 			else if(command == "betweenness_centrality")	{
 				tempdouble = G.betweennessCentrality(scope, 1);
 				if(fileOutput) 
@@ -240,7 +255,7 @@ int listener(Graph & G) {
 			cerr << "Command not recognized." << endl;
 		}				
 		
-		cerr << "Input a command: ";				
+		cerr << "> ";				
 		
 	} // while
 	clog << endl << "End of program." << endl;
