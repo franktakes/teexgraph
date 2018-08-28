@@ -10,7 +10,7 @@ Several explicit design choices were made in in this library:
 * Designed to handle millions of nodes and billions of edges.
 * All computation done in-memory and where possible on all available CPU's using OpenMP. 
 * Focus is on the analysis of the topology/structure of simple directed and undirected graphs, read from a file. 
-* Particular focus on distance-related functions for computing the exact and approximate, distance distribution, various distance-based network metrics such as the diameter, as well as centrality measures such as closeness and betweenness centrality. 
+* Particular focus on distance-related functions for computing the exact and approximate distance distribution, distance-based network metrics such as the diameter, as well as centrality measures such as closeness and betweenness centrality. 
 * No support for graph models/generators, node/edge attributes, node/edge weights, multi-partite networks, community detection algorithms or visualization (there are other tools that can do that).
 * Preference for simplicity over complexity; low-level C++ data structures are used wherever possible, requiring no other libraries than the standard `g++` compiler and the C++ standard library. 
 
