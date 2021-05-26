@@ -45,7 +45,12 @@ int main(const int argc, const char* argv[]) {
     // compute the diameter of the largest WCC of this network
     cout << G.diameterBD() << endl;
     T.click();
-    return 0;
+    
+    // list the network's distance distribution
+    showDistanceDistribution(G);
+    T.click();
+        
+    return 0; 
 }
 
 #endif 

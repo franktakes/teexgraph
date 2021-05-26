@@ -6,4 +6,5 @@
 
 #include "BDGraph.h"
 
+void showDistanceDistribution(Graph & G); 
 void stats(Graph & G);

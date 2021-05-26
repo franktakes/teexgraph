@@ -8,6 +8,17 @@
 #include <iostream>
 using namespace std;
 
+// output how often each distance value occurs
+void showDistanceDistribution(Graph & G) {
+	vector<long> distances;
+	// second parameter "1.0" can be used to state a sampling percentage
+    if(G.wccComputed()) 
+    	distances = G.distanceDistribution(LWCC, 1.0);
+    else
+    	distances = G.distanceDistribution(FULL, 1.0);
+    G.printList(distances);
+}
+
 // show basic stats of the network
 void stats(Graph & G) {
     const int LEFTWIDTH = 40;
@@ -29,7 +40,7 @@ void stats(Graph & G) {
     clog << setw(LEFTWIDTH) << "Wedges: " << G.wedges() << endl;
     clog << setw(LEFTWIDTH) << "Graph clustering coefficient: " << G.graphClusteringCoefficient(FULL) << endl;
     clog << setw(LEFTWIDTH) << "Average local clustering coefficient: " << G.averageClusteringCoefficient(FULL) << endl;
-    clog << setw(LEFTWIDTH) << "Average distance: " << G.averageDistance(FULL, 1) << endl;
+    clog << setw(LEFTWIDTH) << "Average distance: " << G.averageDistance(FULL, 1.0) << endl;
     */
 
     clog << endl;
@@ -60,5 +71,5 @@ void stats(Graph & G) {
         clog << setw(LEFTWIDTH) << "WCC density: " << G.density(LWCC) << endl;
         clog << endl;
     }
-    clog << endl;
+    clog << endl; 
 } // stats
