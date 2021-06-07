@@ -1,6 +1,6 @@
 /*
  * teexGraph --- by Frank Takes --- https://github.com/franktakes/teexgraph
- * 
+ *
  * Centrality metrics
  */
 
@@ -16,7 +16,7 @@ double Graph::closeness(const int u) {
 int Graph::closenessSum(const int u) {
     int current, z;
     queue<int> q;
-    vector<int> d(nodes(FULL), -1);
+    vector<int> d(nodes(Scope::FULL), -1);
 
     d[u] = 0;
     q.push(u);
@@ -41,7 +41,7 @@ int Graph::closenessSum(const int u) {
 vector<int> Graph::closenesses(const int u, vector<long> & dtotals) {
     int current, z;
     queue<int> q;
-    vector<int> d(nodes(FULL), -1);
+    vector<int> d(nodes(Scope::FULL), -1);
 
     d[u] = 0;
     q.push(u);
@@ -63,19 +63,19 @@ vector<int> Graph::closenesses(const int u, vector<long> & dtotals) {
 
 
 // compute all closeness centrality values in parallel
-vector<double> Graph::closenessCentrality(const Scope scope = LWCC, const double inputsamplesize = 1.0) {
+vector<double> Graph::closenessCentrality(const Scope scope = Scope::LWCC, const double inputsamplesize = 1.0) {
 
-    if(!isUndirected() || scope == LSCC || nodes(scope) < 2) {
+    if(!isUndirected() || scope == Scope::LSCC || nodes(scope) < 2) {
         cerr << "Closeness centrality is only implemented for undirected graphs. Valid scopes are FULL and LWCC." << endl;
-        return vector<double>(nodes(FULL), -1);
+        return vector<double>(nodes(Scope::FULL), -1);
     }
 
     double samplesize = inputsamplesize;
     const int cpus = omp_get_num_procs();
     int tid, a, maxi = nodes(scope);
     double total = 0;
-    vector< vector<long> > longarray(cpus, vector<long>(nodes(FULL), 0));
-    vector<bool> done(nodes(FULL) + 1, false); // for sampling
+    vector< vector<long> > longarray(cpus, vector<long>(nodes(Scope::FULL), 0));
+    vector<bool> done(nodes(Scope::FULL) + 1, false); // for sampling
 
     if(samplesize < 1.0) {
         maxi = (double) nodes(scope) * samplesize;
@@ -92,11 +92,11 @@ vector<double> Graph::closenessCentrality(const Scope scope = LWCC, const double
         if(i % max(1, maxi / 20) == 0) // show status % without div by 0 errors
             clog << " " << i / max(1, maxi / 100) << "%";
 
-        // sampled 
+        // sampled
         if(samplesize < 1.0) {
-            a = nodes(FULL);
+            a = nodes(Scope::FULL);
             while(done[a] || !inScope(a, scope)) {
-                a = rand() % nodes(FULL);
+                a = rand() % nodes(Scope::FULL);
             }
             closenesses(a, longarray[tid]);
             done[a] = true;
@@ -112,17 +112,17 @@ vector<double> Graph::closenessCentrality(const Scope scope = LWCC, const double
     clog << " " << "Done." << endl << endl;
 
     // merge all cpu results
-    vector<long> alllongarray(nodes(FULL), 0);
-    for(int i = 0; i < nodes(FULL); i++) {
+    vector<long> alllongarray(nodes(Scope::FULL), 0);
+    for(int i = 0; i < nodes(Scope::FULL); i++) {
         for(int j = 0; j < cpus; j++) {
             alllongarray[i] += (double) longarray[j][i];
             total += (i * longarray[j][i]);
         }
     }
-    vector<double> results(nodes(FULL), 0.0);
-    for(int i = 0; i < nodes(FULL); i++) {
+    vector<double> results(nodes(Scope::FULL), 0.0);
+    for(int i = 0; i < nodes(Scope::FULL); i++) {
         results[i] = 1.0 / ((long double) alllongarray[i] / (long double) maxi);
-        if(scope == FULL && !inScope(i, LWCC))
+        if(scope == Scope::FULL && !inScope(i, Scope::LWCC))
             results[i] = closeness(i);
     }
 
@@ -136,8 +136,8 @@ vector<double> Graph::degreeCentrality() {
 
 // outdegreeCentrality
 vector<double> Graph::outdegreeCentrality() {
-    vector<double> outDeg(nodes(FULL)); // outdegrees    
-    for(int i = 0; i < nodes(FULL); i++) {
+    vector<double> outDeg(nodes(Scope::FULL)); // outdegrees
+    for(int i = 0; i < nodes(Scope::FULL); i++) {
         outDeg[i] = (signed)neighbors(i).size();
     }
     return outDeg;
@@ -145,43 +145,43 @@ vector<double> Graph::outdegreeCentrality() {
 
 // indegreeCentrality
 vector<double> Graph::indegreeCentrality() {
-    vector<double> inDeg(nodes(FULL)); // indegrees
-    for(int i = 0; i < nodes(FULL); i++) {
+    vector<double> inDeg(nodes(Scope::FULL)); // indegrees
+    for(int i = 0; i < nodes(Scope::FULL); i++) {
         inDeg[i] = (signed)revNeighbors(i).size();
     }
     return inDeg;
 } // indegreeCentrality
 
 // eccentricityCentrality
-vector<double> Graph::eccentricityCentrality(const Scope scope = FULL) {
-    if(!isUndirected() || scope == LSCC || nodes(scope) < 2) {
+vector<double> Graph::eccentricityCentrality(const Scope scope = Scope::FULL) {
+    if(!isUndirected() || scope == Scope::LSCC || nodes(scope) < 2) {
         cerr << "Eccentricity centrality is only implemented for undirected graphs. Valid scopes are FULL and LWCC." << endl;
-        return vector<double>(nodes(FULL), -1);
+        return vector<double>(nodes(Scope::FULL), -1);
     }
     vector<int> eccs = eccentricitiesBD();
-    vector<double> centralities(nodes(FULL), -1);
-    for(int i = 0; i < nodes(FULL); i++)
-        if(inScope(i, LWCC))
+    vector<double> centralities(nodes(Scope::FULL), -1);
+    for(int i = 0; i < nodes(Scope::FULL); i++)
+        if(inScope(i, Scope::LWCC))
             centralities[i] = eccs[i];
-        else if(scope == FULL)
+        else if(scope == Scope::FULL)
             centralities[i] = eccentricity(i);
     return centralities;
 } // eccentricityCentrality
 
 // Compute betweenness centrality cf. Brandes 2001 algorithm
-vector<double> Graph::betweennessCentrality(const Scope scope = FULL, const double samplesize = 1.0) {
+vector<double> Graph::betweennessCentrality(const Scope scope = Scope::FULL, const double samplesize = 1.0) {
 
-    if(!isUndirected() || scope == LSCC || nodes(scope) < 2) {
+    if(!isUndirected() || scope == Scope::LSCC || nodes(scope) < 2) {
         cerr << "Betweenness centrality is only implemented for undirected graphs. Valid scopes are FULL and LWCC." << endl;
-        return vector<double>(nodes(FULL), -1);
+        return vector<double>(nodes(Scope::FULL), -1);
     }
 
     const int cpus = omp_get_num_procs();
     int tid;
-    vector< vector<long double> > doublelongarray(cpus, vector<long double>(nodes(FULL), 0));
+    vector< vector<long double> > doublelongarray(cpus, vector<long double>(nodes(Scope::FULL), 0));
     int until = nodes(scope);
     if(samplesize < 1.0)
-        until = (double) nodes(FULL) * samplesize;
+        until = (double) nodes(Scope::FULL) * samplesize;
     int prevs = -1;
 
     clog << "Computing betweenness values (based on a " << samplesize * 100
@@ -193,7 +193,7 @@ vector<double> Graph::betweennessCentrality(const Scope scope = FULL, const doub
 
         vector<double> sp;
         vector<int> d;
-        vector< vector<int> > P(nodes(FULL));
+        vector< vector<int> > P(nodes(Scope::FULL));
         vector<double> delta;
         queue<int> Q;
         stack<int> S;
@@ -205,14 +205,14 @@ vector<double> Graph::betweennessCentrality(const Scope scope = FULL, const doub
         if(samplesize < 1.0) {
             prevs = s;
             do {
-                s = rand() % nodes(FULL);
+                s = rand() % nodes(Scope::FULL);
             } while(!inScope(s, scope));
         } // if
 
-        sp.assign(nodes(FULL), 0);
-        d.assign(nodes(FULL), nodes(FULL) + 1);
-        P.assign(nodes(FULL), vector<int>());
-        delta.assign(nodes(FULL), 0);
+        sp.assign(nodes(Scope::FULL), 0);
+        d.assign(nodes(Scope::FULL), nodes(Scope::FULL) + 1);
+        P.assign(nodes(Scope::FULL), vector<int>());
+        delta.assign(nodes(Scope::FULL), 0);
 
         sp[s] = 1;
         d[s] = 0;
@@ -226,7 +226,7 @@ vector<double> Graph::betweennessCentrality(const Scope scope = FULL, const doub
             const int z = (signed)neighbors(v).size();
             for(int i = 0; i < z; i++) {
                 int w = neighbors(v)[i];
-                if(d[w] == nodes(FULL) + 1) {
+                if(d[w] == nodes(Scope::FULL) + 1) {
                     d[w] = d[v] + 1;
                     Q.push(w);
                 }
@@ -235,7 +235,7 @@ vector<double> Graph::betweennessCentrality(const Scope scope = FULL, const doub
                     P[w].push_back(v);
                 }
             } // for
-        } // while		
+        } // while
 
         while(!S.empty()) {
             w = S.top();
@@ -256,16 +256,16 @@ vector<double> Graph::betweennessCentrality(const Scope scope = FULL, const doub
 
     // merge all cpu results
     long double maxval = 0;
-    vector<long double> totals(nodes(FULL), 0);
-    for(int i = 0; i < nodes(FULL); i++) {
+    vector<long double> totals(nodes(Scope::FULL), 0);
+    for(int i = 0; i < nodes(Scope::FULL); i++) {
         for(int j = 0; j < cpus; j++) {
             totals[i] += (double) doublelongarray[j][i];
         }
         maxval = max(maxval, totals[i]);
     }
 
-    vector<double> centralities(nodes(FULL), 0);
-    for(int i = 0; i < nodes(FULL); i++) {
+    vector<double> centralities(nodes(Scope::FULL), 0);
+    for(int i = 0; i < nodes(Scope::FULL); i++) {
         centralities[i] = totals[i] / maxval;
     }
 
@@ -279,17 +279,17 @@ vector<double> Graph::pageRankCentrality() {
     const double d = 0.85; // dampening factor
     const int iterations = 100;
     double error = 0.0, minval, maxval;
-    vector<double> centralities(nodes(FULL), 1.0 / (double) nodes(FULL));
-    vector<double> centralitiesNext(nodes(FULL), 0);
+    vector<double> centralities(nodes(Scope::FULL), 1.0 / (double) nodes(Scope::FULL));
+    vector<double> centralitiesNext(nodes(Scope::FULL), 0);
 
     for(int k = 0; k < iterations; k++) {
         // do one iteration
         int z;
         double currentvalue;
-        centralitiesNext.assign(nodes(FULL), 0);
+        centralitiesNext.assign(nodes(Scope::FULL), 0);
 
         // compute new pageranks
-        for(int i = 0; i < nodes(FULL); i++) {
+        for(int i = 0; i < nodes(Scope::FULL); i++) {
             z = (signed)neighbors(i).size();
             currentvalue = centralities[i] / (double) z;
             for(int j = 0; j < z; j++)
@@ -300,9 +300,9 @@ vector<double> Graph::pageRankCentrality() {
         error = 0.0;
         minval = 1;
         maxval = 0;
-        for(int i = 0; i < nodes(FULL); i++) {
+        for(int i = 0; i < nodes(Scope::FULL); i++) {
             error += (centralities[i] - centralitiesNext[i])*(centralities[i] - centralitiesNext[i]);
-            centralities[i] = ((1 - d) / nodes(FULL))+(d * centralitiesNext[i]);
+            centralities[i] = ((1 - d) / nodes(Scope::FULL))+(d * centralitiesNext[i]);
             minval = min(minval, centralities[i]);
             maxval = max(maxval, centralities[i]);
         }
@@ -312,5 +312,3 @@ vector<double> Graph::pageRankCentrality() {
 
     return centralities;
 } // pageRankCentrality
-
-

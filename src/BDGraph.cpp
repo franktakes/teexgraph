@@ -1,15 +1,15 @@
 /*
  * teexGraph --- by Frank Takes --- https://github.com/franktakes/teexgraph
- * 
+ *
  * Functions to compute the extreme distance metrics of the WCC of a network.
  * See the following two papers for details:
- * 
- * F.W. Takes and W.A. Kosters, Determining the Diameter of Small World Networks, 
- * in Proceedings of the 20th ACM International Conference on Information and 
- * Knowledge Management (CIKM 2011), pp. 1191-1196, 2011. 
+ *
+ * F.W. Takes and W.A. Kosters, Determining the Diameter of Small World Networks,
+ * in Proceedings of the 20th ACM International Conference on Information and
+ * Knowledge Management (CIKM 2011), pp. 1191-1196, 2011.
  * http://dx.doi.org/10.1145/2063576.2063748
- * 
- * F.W. Takes and W.A. Kosters, Computing the Eccentricity Distribution of Large Graphs, 
+ *
+ * F.W. Takes and W.A. Kosters, Computing the Eccentricity Distribution of Large Graphs,
  * Algorithms 6(1): 100-118, 2013. http://dx.doi.org/10.3390/a6010100
  *
  */
@@ -20,7 +20,7 @@
 int Graph::eccentricity(const int u) {
     int current, z, ecc = 0;
     queue<int> q;
-    d.assign(nodes(FULL), -1);
+    d.assign(nodes(Scope::FULL), -1);
 
     d[u] = 0;
     q.push(u);
@@ -42,14 +42,14 @@ int Graph::eccentricity(const int u) {
 
 // compute the diameter of the WCC, brute-force (APSP) - O(mn)
 int Graph::diameterAPSP() {
-    pruned.assign(nodes(FULL), -1);
+    pruned.assign(nodes(Scope::FULL), -1);
     computeWCC();
     int diameter = 0;
     cerr << "Computing graph diameter using APSP..." << endl;
-    for(int i = 0; i < nodes(FULL); i++) {
-        if(i % (nodes(FULL) / 100) == 0) // show status %
-            cerr << "\b\b\b\b" << i / (nodes(FULL) / 100) << "%";
-        if(inScope(i, LWCC))
+    for(int i = 0; i < nodes(Scope::FULL); i++) {
+        if(i % (nodes(Scope::FULL) / 100) == 0) // show status %
+            cerr << "\b\b\b\b" << i / (nodes(Scope::FULL) / 100) << "%";
+        if(inScope(i, Scope::LWCC))
             diameter = max(diameter, eccentricity(i));
     }
     cerr << "Diameter computation (APSP) done." << endl << endl;
@@ -59,14 +59,14 @@ int Graph::diameterAPSP() {
 
 // compute the radius of the WCC, brute-force (APSP) - O(mn)
 int Graph::radiusAPSP() {
-    pruned.assign(nodes(FULL), -1);
+    pruned.assign(nodes(Scope::FULL), -1);
     computeWCC();
-    int rad = nodes(FULL);
+    int rad = nodes(Scope::FULL);
     cerr << "Computing graph radius using APSP..." << endl;
-    for(int i = 0; i < nodes(FULL); i++) {
-        if(i % (nodes(FULL) / 100) == 0) // show status %
-            cerr << "\b\b\b\b" << i / (nodes(FULL) / 100) << "%";
-        if(inScope(i, LWCC))
+    for(int i = 0; i < nodes(Scope::FULL); i++) {
+        if(i % (nodes(Scope::FULL) / 100) == 0) // show status %
+            cerr << "\b\b\b\b" << i / (nodes(Scope::FULL) / 100) << "%";
+        if(inScope(i, Scope::LWCC))
             rad = min(rad, eccentricity(i));
     }
     cerr << "Radius computation (APSP) done." << endl << endl;
@@ -77,11 +77,11 @@ int Graph::radiusAPSP() {
 // pruning strategy
 int Graph::pruning() {
     int z, count = 0, prunee = -1;
-    pruned.assign(nodes(FULL), -1);
+    pruned.assign(nodes(Scope::FULL), -1);
 
     // pruned[i] is going to contain the node number that i has identical ecc to
-    for(int i = 0; i < nodes(FULL); i++) {
-        if(!inScope(i, LWCC))
+    for(int i = 0; i < nodes(Scope::FULL); i++) {
+        if(!inScope(i, Scope::LWCC))
             continue;
 
         z = neighbors(i).size();
@@ -94,7 +94,7 @@ int Graph::pruning() {
                 } else {
                     pruned[neighbors(i)[j]] = prunee; // [0...n-1] indicates that the node was pruned as it is identical to prunee
                     count++;
-                    pruned[prunee] = -2; // -2 indicates that its neighbors have been pruned			
+                    pruned[prunee] = -2; // -2 indicates that its neighbors have been pruned
                 }
             }
         }
@@ -129,9 +129,9 @@ vector<int> Graph::eccentricitiesBD() {
 
 // get the eccentricities of each of the nodes in the WCC of the graph brute force
 vector<int> Graph::eccentricitiesAPSP() {
-    pruned.assign(nodes(FULL), -1);
-    vector<int> intarray(nodes(FULL), 0);
-    for(int i = 0; i < nodes(FULL); i++) {
+    pruned.assign(nodes(Scope::FULL), -1);
+    vector<int> intarray(nodes(Scope::FULL), 0);
+    for(int i = 0; i < nodes(Scope::FULL); i++) {
         intarray[i] = eccentricity(i);
     }
     return intarray;
@@ -154,9 +154,9 @@ int Graph::centerSizeBD() {
 // compute extreme distance values in the WCC using BoundingDiameters
 int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
 
-    if(!isUndirected() || nodes(LWCC) < 2) {
+    if(!isUndirected() || nodes(Scope::LWCC) < 2) {
         cerr << "BoundingDiameters is only implemented for undirected graphs' scope LWCC." << endl;
-        ecc_lower.assign(nodes(FULL), -1);
+        ecc_lower.assign(nodes(Scope::FULL), -1);
         return 0;
     }
 
@@ -164,18 +164,18 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
     int it = 0, current_ecc, current = -1, // n-1 for random
             minupper = -2, maxupper = -1, minlower = -4, maxlower = -3,
             minlowernode = -1, maxuppernode = -1,
-            candidates = nodes(LWCC);
+            candidates = nodes(Scope::LWCC);
     bool showstatus = false;
-    ecc_lower.assign(nodes(FULL), 0);
-    ecc_upper.assign(nodes(FULL), nodes(LWCC));
-    candidate.assign(nodes(FULL), true);
-    d.assign(nodes(FULL), 0);
+    ecc_lower.assign(nodes(Scope::FULL), 0);
+    ecc_upper.assign(nodes(Scope::FULL), nodes(Scope::LWCC));
+    candidate.assign(nodes(Scope::FULL), true);
+    d.assign(nodes(Scope::FULL), 0);
 
     // initialize high/low selection bool
     bool high = true;
 
     // perform pruning
-    pruned.assign(nodes(FULL), -1);    
+    pruned.assign(nodes(Scope::FULL), -1);
     if(PRUNE)
         candidates -= pruning();
 
@@ -188,16 +188,16 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
         /*
         do {
                 current = rand() % n;
-        } while(!candidate[current] || !inScope(current, LWCC) || pruned[current] >= 0);
+        } while(!candidate[current] || !inScope(current, Scope::LWCC) || pruned[current] >= 0);
          */
 
-        // select the next node to be investigated		
+        // select the next node to be investigated
         //selectFrom(); // this function has been unrolled here
         high = !high;
         if(current == -1) { // only in the first round, select node with highest degree
             current = 0;
-            for(int i = 1; i < nodes(FULL); i++) {
-                if(d[i] == -1 || !inScope(i, LWCC) || pruned[i] >= 0)
+            for(int i = 1; i < nodes(Scope::FULL); i++) {
+                if(d[i] == -1 || !inScope(i, Scope::LWCC) || pruned[i] >= 0)
                     continue;
                 if(neighbors(i).size() > neighbors(current).size()) {
                     current = i;
@@ -212,8 +212,8 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
         // determine the eccentricity of the current node
         current_ecc = eccentricity(current);
 
-        // output some status info (1)			
-        if(TYPE != 3 || candidates % (1 + (nodes(LWCC) / 100)) == 0) {
+        // output some status info (1)
+        if(TYPE != 3 || candidates % (1 + (nodes(Scope::LWCC) / 100)) == 0) {
             cerr << setw(3) << it
                     << ". Current: " << setw(8) << revMapNode(current)
                     << " (" << ecc_lower[current] << "/"
@@ -225,14 +225,14 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
         maxuppernode = -1;
         minlowernode = -1;
 		// initialize min/max values
-		minlower = nodes(LWCC);
+		minlower = nodes(Scope::LWCC);
 		maxlower = 0;
-		minupper = nodes(LWCC);
-		maxupper = 0;        
+		minupper = nodes(Scope::LWCC);
+		maxupper = 0;
 
         // update bounds
-        for(int i = 0; i < nodes(FULL); i++) {
-            if(d[i] == -1 || !inScope(i, LWCC) || pruned[i] >= 0)
+        for(int i = 0; i < nodes(Scope::FULL); i++) {
+            if(d[i] == -1 || !inScope(i, Scope::LWCC) || pruned[i] >= 0)
                 continue;
 
             // update eccentricity bounds
@@ -247,8 +247,8 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
         }
 
         // update candidate set
-        for(int i = 0; i < nodes(FULL); i++) {
-            if(!candidate[i] || d[i] == -1 || !inScope(i, LWCC) || pruned[i] >= 0)
+        for(int i = 0; i < nodes(Scope::FULL); i++) {
+            if(!candidate[i] || d[i] == -1 || !inScope(i, Scope::LWCC) || pruned[i] >= 0)
                 continue;
 
             // disregard nodes that can no longer contribute
@@ -258,7 +258,7 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
                     || (TYPE == 2 && ecc_lower[i] >= minupper && (ecc_upper[i] + 1) / 2 <= minlower)// radius
                     || (TYPE == 4 && ecc_upper[i] < maxlower && ((maxlower == maxupper) || (ecc_lower[i]*2 > maxupper))) // periphery
                     || (TYPE == 5 && ecc_lower[i] > minupper && ((minlower == minupper) || ((ecc_upper[i] + 1) / 2 < minlower))) // center
-                    || (TYPE == 3 && ecc_lower[i] == ecc_upper[i]) // eccentricity distribution			
+                    || (TYPE == 3 && ecc_lower[i] == ecc_upper[i]) // eccentricity distribution
                     ))) {
                 candidate[i] = false;
                 candidates--;
@@ -295,8 +295,8 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
     cerr << "\nIterations: ";
     //cout << "\t" << it;
     cerr << "\t" << it;
-    cerr << endl << "Number of brute-force iterations: " << nodes(LWCC)
-            << ". Speed-up factor: " << (double) nodes(LWCC) / it << endl;
+    cerr << endl << "Number of brute-force iterations: " << nodes(Scope::LWCC)
+            << ". Speed-up factor: " << (double) nodes(Scope::LWCC) / it << endl;
 
     // return the diameter
     if(TYPE == 1) {
@@ -312,7 +312,7 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
 
     // process ecc values for pruned nodes
     if(PRUNE) {
-        for(int i = 0; i < nodes(FULL); i++)
+        for(int i = 0; i < nodes(Scope::FULL); i++)
             if(pruned[i] >= 0)
                 ecc_lower[i] = ecc_lower[(int) pruned[i]];
     }
@@ -320,7 +320,7 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
     // return the periphery size
     if(TYPE == 4) {
         int periphery = 0;
-        for(int i = 0; i < nodes(FULL); i++) {
+        for(int i = 0; i < nodes(Scope::FULL); i++) {
             if(ecc_lower[i] == maxlower)
                 periphery++;
         }
@@ -331,7 +331,7 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
     // return the center size
     if(TYPE == 5) {
         int center = 0;
-        for(int i = 0; i < nodes(FULL); i++) {
+        for(int i = 0; i < nodes(Scope::FULL); i++) {
             if(ecc_upper[i] == minupper)
                 center++;
         }
@@ -343,5 +343,3 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
     cerr << "\nEccentricity distribution: " << endl;
     return 0;
 } // extremaBounding
-
-

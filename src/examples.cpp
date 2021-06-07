@@ -1,6 +1,6 @@
 /*
  * teexGraph --- by Frank Takes --- https://github.com/franktakes/teexgraph
- * 
+ *
  * Examples of how to use the code
  */
 
@@ -12,10 +12,10 @@ using namespace std;
 void showDistanceDistribution(Graph & G) {
 	vector<long> distances;
 	// second parameter "1.0" can be used to state a sampling percentage
-    if(G.wccComputed()) 
-    	distances = G.distanceDistribution(LWCC, 1.0);
+    if(G.wccComputed())
+    	distances = G.distanceDistribution(Scope::LWCC, 1.0);
     else
-    	distances = G.distanceDistribution(FULL, 1.0);
+    	distances = G.distanceDistribution(Scope::FULL, 1.0);
     G.printList(distances);
 }
 
@@ -24,23 +24,23 @@ void stats(Graph & G) {
     const int LEFTWIDTH = 40;
 
     // the following metrics are linear in computation time and "free" to show"
-    clog << setw(LEFTWIDTH) << "Nodes n: " << G.nodes(FULL) << endl;
-    clog << setw(LEFTWIDTH) << "Links m: " << G.edges(FULL) << endl;
-    clog << setw(LEFTWIDTH) << "Self-edges: " << G.selfEdges(FULL) << endl;
+    clog << setw(LEFTWIDTH) << "Nodes n: " << G.nodes(Scope::FULL) << endl;
+    clog << setw(LEFTWIDTH) << "Links m: " << G.edges(Scope::FULL) << endl;
+    clog << setw(LEFTWIDTH) << "Self-edges: " << G.selfEdges(Scope::FULL) << endl;
     if(G.isUndirected())
-        clog << setw(LEFTWIDTH) << "Undirected edges: " << G.selfEdges(FULL) + ((G.edges(FULL) - G.selfEdges(FULL)) / 2) << endl;
-    clog << setw(LEFTWIDTH) << "Average degree: " << G.averageDegree(FULL) << endl;
-    clog << setw(LEFTWIDTH) << "Density: " << G.density(FULL) << endl;
+        clog << setw(LEFTWIDTH) << "Undirected edges: " << G.selfEdges(Scope::FULL) + ((G.edges(Scope::FULL) - G.selfEdges(Scope::FULL)) / 2) << endl;
+    clog << setw(LEFTWIDTH) << "Average degree: " << G.averageDegree(Scope::FULL) << endl;
+    clog << setw(LEFTWIDTH) << "Density: " << G.density(Scope::FULL) << endl;
 
     // the following metrics are not linear in computation time
     /*
     if(!G.isUndirected())
-        clog << setw(LEFTWIDTH) << "Reciprocity: " << G.reciprocity(FULL) << endl;
+        clog << setw(LEFTWIDTH) << "Reciprocity: " << G.reciprocity(Scope::FULL) << endl;
     clog << setw(LEFTWIDTH) << "Triangles: " << G.triangles() << endl;
     clog << setw(LEFTWIDTH) << "Wedges: " << G.wedges() << endl;
-    clog << setw(LEFTWIDTH) << "Graph clustering coefficient: " << G.graphClusteringCoefficient(FULL) << endl;
-    clog << setw(LEFTWIDTH) << "Average local clustering coefficient: " << G.averageClusteringCoefficient(FULL) << endl;
-    clog << setw(LEFTWIDTH) << "Average distance: " << G.averageDistance(FULL, 1.0) << endl;
+    clog << setw(LEFTWIDTH) << "Graph clustering coefficient: " << G.graphClusteringCoefficient(Scope::FULL) << endl;
+    clog << setw(LEFTWIDTH) << "Average local clustering coefficient: " << G.averageClusteringCoefficient(Scope::FULL) << endl;
+    clog << setw(LEFTWIDTH) << "Average distance: " << G.averageDistance(Scope::FULL, 1.0) << endl;
     */
 
     clog << endl;
@@ -52,24 +52,24 @@ void stats(Graph & G) {
 
     if(G.sccComputed()) {
         clog << setw(LEFTWIDTH) << "Strongly connected components: " << G.sccCount() << endl;
-        clog << setw(LEFTWIDTH) << "SCC nodes n: " << G.nodes(LSCC) << endl;
-        clog << setw(LEFTWIDTH) << "SCC links m: " << G.edges(LSCC) << endl;
-        clog << setw(LEFTWIDTH) << "SCC self-edges: " << G.selfEdges(LSCC) << endl;
-        clog << setw(LEFTWIDTH) << "SCC average degree: " << G.averageDegree(LSCC) << endl;
-        clog << setw(LEFTWIDTH) << "SCC density: " << G.density(LSCC) << endl;
+        clog << setw(LEFTWIDTH) << "SCC nodes n: " << G.nodes(Scope::LSCC) << endl;
+        clog << setw(LEFTWIDTH) << "SCC links m: " << G.edges(Scope::LSCC) << endl;
+        clog << setw(LEFTWIDTH) << "SCC self-edges: " << G.selfEdges(Scope::LSCC) << endl;
+        clog << setw(LEFTWIDTH) << "SCC average degree: " << G.averageDegree(Scope::LSCC) << endl;
+        clog << setw(LEFTWIDTH) << "SCC density: " << G.density(Scope::LSCC) << endl;
         clog << endl;
     }
 
     if(G.wccComputed()) {
         clog << setw(LEFTWIDTH) << "Weakly connected components: " << G.wccCount() << endl;
-        clog << setw(LEFTWIDTH) << "WCC nodes n: " << G.nodes(LWCC) << endl;
-        clog << setw(LEFTWIDTH) << "WCC links m: " << G.edges(LWCC) << endl;
-        clog << setw(LEFTWIDTH) << "WCC self-edges: " << G.selfEdges(LWCC) << endl;
+        clog << setw(LEFTWIDTH) << "WCC nodes n: " << G.nodes(Scope::LWCC) << endl;
+        clog << setw(LEFTWIDTH) << "WCC links m: " << G.edges(Scope::LWCC) << endl;
+        clog << setw(LEFTWIDTH) << "WCC self-edges: " << G.selfEdges(Scope::LWCC) << endl;
         if(G.isUndirected())
-            clog << setw(LEFTWIDTH) << "WCC undirected edges: " << G.selfEdges(LWCC) + ((G.edges(LWCC) - G.selfEdges(LWCC)) / 2) << endl;
-        clog << setw(LEFTWIDTH) << "WCC average degree: " << G.averageDegree(LWCC) << endl;
-        clog << setw(LEFTWIDTH) << "WCC density: " << G.density(LWCC) << endl;
+            clog << setw(LEFTWIDTH) << "WCC undirected edges: " << G.selfEdges(Scope::LWCC) + ((G.edges(Scope::LWCC) - G.selfEdges(Scope::LWCC)) / 2) << endl;
+        clog << setw(LEFTWIDTH) << "WCC average degree: " << G.averageDegree(Scope::LWCC) << endl;
+        clog << setw(LEFTWIDTH) << "WCC density: " << G.density(Scope::LWCC) << endl;
         clog << endl;
     }
-    clog << endl; 
+    clog << endl;
 } // stats

@@ -1,6 +1,6 @@
 /*
  * teexGraph --- by Frank Takes --- https://github.com/franktakes/teexgraph
- * 
+ *
  * Graph class functions
  */
 
@@ -121,7 +121,7 @@ bool Graph::loadDirected(const string filename) {
         return false;
     }
 
-    // ignore first lines that do not start with an integer character 
+    // ignore first lines that do not start with an integer character
     char c = fin.peek();
     while(!(
             (c >= '0' && c <= '9') ||
@@ -152,7 +152,7 @@ bool Graph::loadDirected(const string filename) {
 
     loaded = true;
 
-    // succesful if we didnt have to skip edges	
+    // succesful if we didnt have to skip edges
     if(edgesSkipped == 0) {
         sortEdgeList();
         clog << "Loading done." << endl << endl;
@@ -221,19 +221,19 @@ void Graph::sortEdgeList() {
 // check if node is in particular scope
 bool Graph::inScope(const int u, const Scope scope) {
     return
-    (scope == FULL ||
-            (scope == LWCC && doneWCC && wccId[u] == largestWCC) ||
-            (scope == LSCC && doneSCC && sccId[u] == largestSCC));
+    (scope == Scope::FULL ||
+            (scope == Scope::LWCC && doneWCC && wccId[u] == largestWCC) ||
+            (scope == Scope::LSCC && doneSCC && sccId[u] == largestSCC));
 } // inScope
 
 
 // Get the number of nodes n
-int Graph::nodes(const Scope scope = FULL) {
-    if(scope == FULL) {
+int Graph::nodes(const Scope scope = Scope::FULL) {
+    if(scope == Scope::FULL) {
         return n;
-    } else if(scope == LWCC && doneWCC) {
+    } else if(scope == Scope::LWCC && doneWCC) {
         return wccNodes[largestWCC];
-    } else if(scope == LSCC && doneSCC) {
+    } else if(scope == Scope::LSCC && doneSCC) {
         return sccNodes[largestSCC];
     }
     return -1;
@@ -254,12 +254,12 @@ int Graph::wccOf(const int u) {
 } // nodes
 
 // Get the number of links m
-long Graph::edges(const Scope scope = FULL) {
-    if(scope == FULL) {
+long Graph::edges(const Scope scope = Scope::FULL) {
+    if(scope == Scope::FULL) {
         return m;
-    } else if(scope == LWCC && doneWCC) {
+    } else if(scope == Scope::LWCC && doneWCC) {
         return wccEdges[largestWCC];
-    } else if(scope == LSCC && doneSCC) {
+    } else if(scope == Scope::LSCC && doneSCC) {
         return sccEdges[largestSCC];
     }
     return -1;
@@ -267,16 +267,16 @@ long Graph::edges(const Scope scope = FULL) {
 
 
 // Get the number of self-links
-long Graph::selfEdges(const Scope scope = FULL) {
-    if(scope == FULL)
+long Graph::selfEdges(const Scope scope = Scope::FULL) {
+    if(scope == Scope::FULL)
         return selfm;
-    else if(scope == LWCC && doneWCC) {
+    else if(scope == Scope::LWCC && doneWCC) {
         int total = 0;
         for(int i = 0; i < n; i++)
             if(inScope(i, scope) && hasSelfLoop[i])
                 total++;
         return total;
-    } else if(scope == LSCC && doneSCC) {
+    } else if(scope == Scope::LSCC && doneSCC) {
         int total = 0;
         for(int i = 0; i < n; i++)
             if(inScope(i, scope) && hasSelfLoop[i])
@@ -385,7 +385,7 @@ void Graph::computeWCC() {
 } // computeWCC
 
 
-// helper function for computeSCC(), simulate DFS post-visit marking 
+// helper function for computeSCC(), simulate DFS post-visit marking
 void Graph::goVisitSCC(const int a, vector<bool> & sccVisited,
         stack<int> & sccStack, vector<int> & parentOf, vector<int> & atIt) {
 
@@ -438,7 +438,7 @@ void Graph::goMarkSCC(const int x, const int component) {
                 }
         }
     }
-} // goMarkSCC 
+} // goMarkSCC
 
 
 // find strongly connected components cf. Kosaraju's algorithm, without recursion
@@ -484,11 +484,11 @@ void Graph::computeSCC() {
     doneSCC = true;
 
     clog << "SCC computed." << endl << endl;
-} // computeSCC	
+} // computeSCC
 
 
-// compute the reciprocity: fraction of links (u,v) that also exist as (v, u) 
-double Graph::reciprocity(const Scope scope = FULL) {
+// compute the reciprocity: fraction of links (u,v) that also exist as (v, u)
+double Graph::reciprocity(const Scope scope = Scope::FULL) {
     double total = 0, reci = 0;
     for(int i = 0; i < n; i++)
         if(inScope(i, scope)) {
@@ -507,23 +507,23 @@ double Graph::reciprocity(const Scope scope = FULL) {
 
 // compute the density: the number of edges / the maximum number of edges
 double Graph::density(const Scope scope) {
-    if(scope == FULL) {
+    if(scope == Scope::FULL) {
         int noselfnodeswitch = 1;
-        if(selfEdges(FULL) > 0)
+        if(selfEdges(Scope::FULL) > 0)
             noselfnodeswitch = 0;
         if(m > 0 && n > 1)
             return(((double) m) / ((double) n)) / (((double) (n - noselfnodeswitch)));
         return 0;
-    } else if((scope == LWCC) & doneWCC) {
+    } else if((scope == Scope::LWCC) & doneWCC) {
         int noselfnodeswitch = 1;
-        if(selfEdges(LWCC) > 0)
+        if(selfEdges(Scope::LWCC) > 0)
             noselfnodeswitch = 0;
         if(wccNodes[largestWCC] > 1)
             return(((double) wccEdges[largestWCC]) / ((double) wccNodes[largestWCC])) / (((double) (wccNodes[largestWCC] - noselfnodeswitch)));
         return 0;
-    } else if((scope == LSCC) & doneSCC) {
+    } else if((scope == Scope::LSCC) & doneSCC) {
         int noselfnodeswitch = 1;
-        if(selfEdges(LSCC) > 0)
+        if(selfEdges(Scope::LSCC) > 0)
             noselfnodeswitch = 0;
         if(sccNodes[largestSCC] > 1)
             return(((double) sccEdges[largestSCC]) / ((double) sccNodes[largestSCC])) / (((double) (sccNodes[largestSCC] - noselfnodeswitch)));
@@ -535,17 +535,17 @@ double Graph::density(const Scope scope) {
 
 // average degree in a scope
 double Graph::averageDegree(const Scope scope) {
-    if(scope == FULL) {
+    if(scope == Scope::FULL) {
         if(undirected)
             return((double) m / (double) n);
         else
             return((double) m / (double) n) * 2;
-    } else if(scope == LWCC && doneWCC) {
+    } else if(scope == Scope::LWCC && doneWCC) {
         if(undirected)
             return((double) wccEdges[largestWCC] / (double) wccNodes[largestWCC]);
         else
             return((double) wccEdges[largestWCC] / (double) wccNodes[largestWCC]) * 2;
-    } else if(scope == LSCC && doneSCC) {
+    } else if(scope == Scope::LSCC && doneSCC) {
         if(undirected)
             return((double) sccEdges[largestSCC] / (double) sccNodes[largestSCC]);
         else
@@ -567,7 +567,7 @@ double Graph::nodeClusteringCoefficient(const int u) {
 
 
 // compute the node clustering coefficient for each node
-vector<double> Graph::localClustering(const Scope scope = FULL) {
+vector<double> Graph::localClustering(const Scope scope = Scope::FULL) {
     vector<double> temparray(n, -1);
 
     double temp;
@@ -587,8 +587,8 @@ vector<double> Graph::localClustering(const Scope scope = FULL) {
 } // localClustering
 
 
-// compute the graph's average local clustering coefficient 
-double Graph::averageClusteringCoefficient(const Scope scope = FULL) {
+// compute the graph's average local clustering coefficient
+double Graph::averageClusteringCoefficient(const Scope scope = Scope::FULL) {
     vector<double> values = localClustering(scope);
     long double total = 0;
     for(int i = 0; i < n; i++)
@@ -609,8 +609,8 @@ long Graph::triangles(const Scope scope) {
     const int cpus = omp_get_num_procs();
     vector<long> total(cpus, 0);
 #pragma omp parallel for schedule(dynamic, 1) private(tid,result)
-    for(int i = 0; i < n; i++) 
-        if(inScope(i, scope)) {	
+    for(int i = 0; i < n; i++)
+        if(inScope(i, scope)) {
         	if(i % max(1, n / 20) == 0) // show status % without div by 0 errors
             	clog << " " << i / max(1, n / 100) << "%";
         	tid = omp_get_thread_num();
@@ -632,8 +632,8 @@ long Graph::wedges(const Scope scope) {
     const int cpus = omp_get_num_procs();
     vector<long> total(cpus, 0);
 #pragma omp parallel for schedule(dynamic, 1) private(tid,result)
-    for(int i = 0; i < n; i++) 
-        if(inScope(i, scope)) {	
+    for(int i = 0; i < n; i++)
+        if(inScope(i, scope)) {
             if(i % max(1, n / 20) == 0) // show status % without div by 0 errors
             clog << " " << i / max(1, n / 100) << "%";
      	   tid = omp_get_thread_num();
@@ -682,14 +682,14 @@ pair<long, long> Graph::trianglesWedgesAround(const int u) {
 
 
 // compute the graph's clustering coefficient: triangles*3/possible triangles
-double Graph::graphClusteringCoefficient(const Scope scope = FULL) {
+double Graph::graphClusteringCoefficient(const Scope scope = Scope::FULL) {
     long double totaltriangles = 0, totalwedges = 0;
     int tid;
     pair<long, long> result;
     const int cpus = omp_get_num_procs();
     vector<long double> triangles(cpus, 0);
     vector<long double> wedges(cpus, 0);
-#pragma omp parallel for schedule(dynamic, 1) private(tid,result)             
+#pragma omp parallel for schedule(dynamic, 1) private(tid,result)
     for(int i = 0; i < n; i++) {
         if(i % max(1, n / 20) == 0) // show status % without div by 0 errors
             clog << " " << i / max(1, n / 100) << "%";
@@ -723,8 +723,8 @@ vector<int> Graph::sccSizeDistribution() {
 	return sccNodes;
 } // sccSizeDistribution
 
-vector<long> Graph::outdegreeDistribution(const Scope scope = FULL) {
-    vector<long> outDeg(n); // outdegrees    
+vector<long> Graph::outdegreeDistribution(const Scope scope = Scope::FULL) {
+    vector<long> outDeg(n); // outdegrees
     for(int i = 0; i < n; i++) {
         outDeg[i] = (signed)E[i].size();
     }
@@ -732,7 +732,7 @@ vector<long> Graph::outdegreeDistribution(const Scope scope = FULL) {
     //clog << "Outdegree distribution printed." << endl;
     return outDeg;
 } // outdegreeDistribution
-vector<long> Graph::indegreeDistribution(const Scope scope = FULL) {
+vector<long> Graph::indegreeDistribution(const Scope scope = Scope::FULL) {
     vector<long> inDeg(n); // indegrees
     for(int i = 0; i < n; i++) {
         inDeg[i] = (signed)rE[i].size();
@@ -743,7 +743,7 @@ vector<long> Graph::indegreeDistribution(const Scope scope = FULL) {
 } // indegreeDistribution
 
 
-// compute the distance between node u and v --- O(m) 
+// compute the distance between node u and v --- O(m)
 int Graph::distance(const int u, const int v) {
     int current, z;
     queue<int> q;
@@ -767,7 +767,7 @@ int Graph::distance(const int u, const int v) {
     return d[v];
 } // distance
 
-// compute and return all distances from node u --- O(m) 
+// compute and return all distances from node u --- O(m)
 vector<int> Graph::alldistances(const int u) {
     int current, z;
     queue<int> q;
@@ -794,7 +794,7 @@ vector<int> Graph::alldistances(const int u) {
 vector<int> Graph::distances(const int u, vector<long> & dtotals) {
     int current, z;
     queue<int> q;
-    vector<int> d(nodes(FULL), -1);
+    vector<int> d(nodes(Scope::FULL), -1);
 
     d[u] = 0;
     q.push(u);
@@ -813,11 +813,11 @@ vector<int> Graph::distances(const int u, vector<long> & dtotals) {
     }
     return d;
 } // distances
-double Graph::averageDistance(const Scope scope = FULL, const double inputsamplesize = 1.0) {
+double Graph::averageDistance(const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) {
     vector<long> result;
     long res = 0;
     result = distanceDistribution(scope, inputsamplesize);
-    for(int i = 0; i < nodes(FULL); i++)
+    for(int i = 0; i < nodes(Scope::FULL); i++)
         if(result[i] > 0) {
             res += (i * result[i]);
         }
@@ -826,7 +826,7 @@ double Graph::averageDistance(const Scope scope = FULL, const double inputsample
 
 
 // print the distance distribution [distance frequency]
-vector<long> Graph::distanceDistribution(const Scope scope = FULL, const double inputsamplesize = 1.0) {
+vector<long> Graph::distanceDistribution(const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) {
 
     double samplesize = inputsamplesize;
 
@@ -856,7 +856,7 @@ vector<long> Graph::distanceDistribution(const Scope scope = FULL, const double 
         if(donecount % max(1, maxi / 20) == 0) // show status % without div by 0 errors
             clog << " " << donecount / max(1, maxi / 100) << "%";
 
-        // sampled 
+        // sampled
         if(samplesize < 1.0) {
             a = n;
             while(done[a] || !inScope(a, scope)) {
@@ -939,10 +939,10 @@ int Graph::sccCount() {
 } // sccComputed
 
 // write binary adjacency list to file
-void Graph::writeBinaryAdjacencyList(const Scope scope = FULL, string filename = "") {
+void Graph::writeBinaryAdjacencyList(const Scope scope = Scope::FULL, string filename = "") {
     FILE* myFile;
     myFile = fopen(filename.c_str(), "wb");
-	
+
 	for(int i=0; i<n; i++) {
         if(inScope(i, scope)) {
 			for(int j=0; j<(signed)E[i].size(); j++)
@@ -954,4 +954,3 @@ void Graph::writeBinaryAdjacencyList(const Scope scope = FULL, string filename =
 	}
 	fclose(myFile);
 } // writeBinaryAdjacencyList
-
