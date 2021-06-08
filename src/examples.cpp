@@ -5,8 +5,12 @@
  */
 
 #include "examples.h"
+
 #include <iostream>
+
 using namespace std;
+
+namespace teexgraph {
 
 // output how often each distance value occurs
 void showDistanceDistribution(Graph & G) {
@@ -73,3 +77,5 @@ void stats(Graph & G) {
     }
     clog << endl;
 } // stats
+
+}

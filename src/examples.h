@@ -1,10 +1,16 @@
 /*
  * teexGraph --- by Frank Takes --- https://github.com/franktakes/teexgraph
- * 
+ *
  * Examples of how to use the code
  */
 
-#include "BDGraph.h"
+#pragma once
 
-void showDistanceDistribution(Graph & G); 
+#include <teexgraph/BDGraph.h>
+
+namespace teexgraph {
+
+void showDistanceDistribution(Graph & G);
 void stats(Graph & G);
+
+}

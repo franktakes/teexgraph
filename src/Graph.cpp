@@ -4,7 +4,13 @@
  * Graph class functions
  */
 
-#include "Graph.h"
+#include <teexgraph/Graph.h>
+
+#include <string>
+#include <vector>
+
+using namespace std;
+using namespace teexgraph;
 
 // initialization of Graph object
 Graph::Graph() {

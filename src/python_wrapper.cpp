@@ -1,9 +1,11 @@
-#include <Graph.h>
+#include <teexgraph/Graph.h>
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
 #include <cstdint>
+
+using namespace teexgraph;
 
 namespace py = pybind11;
 

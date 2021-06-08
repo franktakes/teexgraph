@@ -11,7 +11,7 @@ add_library(teexgraphlib
   src/Graph.cpp
   src/Timer.cpp
 )
-target_include_directories(teexgraphlib PUBLIC src/)
+target_include_directories(teexgraphlib PUBLIC include/)
 target_compile_options(teexgraphlib PRIVATE -Wall -pedantic)
 target_link_libraries(teexgraphlib PRIVATE OpenMP::OpenMP_CXX)
 set_property(TARGET teexgraphlib PROPERTY POSITION_INDEPENDENT_CODE ON)

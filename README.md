@@ -65,6 +65,32 @@ make
 * The program expects a whitespace-separated edge list (indicated by node pairs) as input format. By default, it assumes nodes of the type `long`. This can be changed to for example `string` in [Graph.h](src/main.cpp) at the cost of a factor 2 or more in loading speed. Friendly input files are expected; although comments (lines that do not start with a character in [a-zA-Z0-9]) at the beginning of the input file are allowed. After the first line with an edge, only edges are expected.
 
 
+## Use as a Python library
+
+If PyBind11 is installed and teexGraph is compiled as above a file with a name ismilar to
+```text
+build/pyteexgraph.cpython-39-x86_64-linux-gnu.so
+```
+will be generated. Make sure this is accessible from your Python working directory  and use 
+```
+import pyteexgraph
+```
+from within Python to load it.
+
+
+## Use as a C++ library
+
+If your project uses cmake, then incorporating kilosim is easy!
+
+Just add the following lines to your `CMakeLists.txt` file:
+```text
+add_subdirectory(path/to/teexgraph EXCLUDE_FROM_ALL)
+target_link_libraries(your_executable_target PRIVATE teexgraphlib)
+```
+
+And everything should just work.
+
+
 ## Disclaimer
 
 This code was written for research-purposes only, and is and should in no way be seen as an attempt at creating a good piece of code with respect to any programming- or software-engineering standards whatsoever.

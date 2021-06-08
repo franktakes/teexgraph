@@ -14,7 +14,14 @@
  *
  */
 
-#include "Graph.h"
+#include <teexgraph/Graph.h>
+
+#include <queue>
+#include <string>
+#include <vector>
+
+using namespace std;
+using namespace teexgraph;
 
 // compute the eccentricity of node u - O(m)
 int Graph::eccentricity(const int u) {

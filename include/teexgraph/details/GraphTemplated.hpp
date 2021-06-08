@@ -6,8 +6,11 @@
 
 // print distribution of values in an array
 template <typename Number>
-void printDistri(vector<Number> & values, const Scope scope = Scope::FULL) {
-    vector<Number> intarray(n + 1, 0);
+void printDistri(
+    const std::vector<Number> & values,
+    const Scope scope = Scope::FULL
+) {
+    std::vector<Number> intarray(n + 1, 0);
     for(int i = 0; i < (signed)values.size(); i++) {
         if(inScope(i, scope)) {
             intarray[values[i]]++;
@@ -19,7 +22,7 @@ void printDistri(vector<Number> & values, const Scope scope = Scope::FULL) {
 
 // print an array of values, tab-separated [value frequency]
 template <typename Number>
-void printList(vector<Number> & values) {
+void printList(const std::vector<Number> & values) {
     long double total = 0;
     double count = 0;
     Number minvalue = INT_MAX;
@@ -28,25 +31,28 @@ void printList(vector<Number> & values) {
     int maxi = -1;
     for(int i = 0; i < (signed)values.size(); i++)
         if(values[i] > 0) {
-            mini = min(i, mini);
-            maxi = max(i, maxi);
-            minvalue = min(values[i], minvalue);
-            maxvalue = max(values[i], maxvalue);
-            cout << i << '\t' << values[i] << endl; // to print any list
+            mini = std::min(i, mini);
+            maxi = std::max(i, maxi);
+            minvalue = std::min(values[i], minvalue);
+            maxvalue = std::max(values[i], maxvalue);
+            std::cout << i << '\t' << values[i] << std::endl; // to print any list
             total += i * values[i];
             count += values[i];
         }
-    clog << "Weighted total: " << total << ", count: " << count <<
-            ", average: " << (double) total / count << endl;
-    clog << "Min-index: " << mini << ", max-index: " << maxi <<
-            ", min-value: " << minvalue << ", max-value: " << maxvalue << endl;
+    std::clog << "Weighted total: " << total << ", count: " << count <<
+            ", average: " << (double) total / count << std::endl;
+    std::clog << "Min-index: " << mini << ", max-index: " << maxi <<
+            ", min-value: " << minvalue << ", max-value: " << maxvalue << std::endl;
 } // printList
 
 
 // print an array of values, tab-separated [node value]
 template <typename Number>
-void printNodeList(vector<Number> & values, const Scope scope = Scope::FULL) {
-    vector<int> emptyfilter(n, 0);
+void printNodeList(
+    const std::vector<Number> & values,
+    const Scope scope = Scope::FULL
+) {
+    std::vector<int> emptyfilter(n, 0);
     if(scope == Scope::LSCC)
         printFilteredNodeList(values, sccId, largestSCC);
     else if(scope == Scope::LWCC)
@@ -58,8 +64,11 @@ void printNodeList(vector<Number> & values, const Scope scope = Scope::FULL) {
 
 // print arrays of values, tab-separated [node value]
 template <typename Number>
-void printNodeList(vector< vector<Number> > & values, const Scope scope = Scope::FULL) {
-    vector<int> emptyfilter(n, 0);
+void printNodeList(
+    const std::vector< std::vector<Number> > & values,
+    const Scope scope = Scope::FULL
+) {
+    std::vector<int> emptyfilter(n, 0);
     if(scope == Scope::LSCC)
         printFilteredNodeList(values, sccId, largestSCC);
     else if(scope == Scope::LWCC)
@@ -71,49 +80,60 @@ void printNodeList(vector< vector<Number> > & values, const Scope scope = Scope:
 
 // print arrays of values, tab-separated [node value]
 template <typename Number>
-void printFilteredNodeList(vector< vector<Number> > & values, vector<int> & targetfilter, int targetvalue) {
+void printFilteredNodeList(
+    const std::vector< std::vector<Number> > & values,
+    const std::vector<int> & targetfilter,
+    const int targetvalue
+) {
     long double count = 0;
     for(int i = 0; i < n; i++)
         if(targetfilter[i] == targetvalue) {
-            cout << revMapNode(i);
+            std::cout << revMapNode(i);
             for(int j = 0; j < (signed)values.size(); j++)
-                cout << '\t' << values[j][i]; // to print node lists
-            cout << endl;
+                std::cout << '\t' << values[j][i]; // to print node lists
+            std::cout << std::endl;
             count += 1;
         }
-    clog << "Count: " << count << endl;
+    std::clog << "Count: " << count << std::endl;
 }
 
 
 // print an array of values, tab-separated [node value]
 template <typename Number>
-void printFilteredNodeList(vector<Number> & values, vector<int> & targetfilter, int targetvalue) {
+void printFilteredNodeList(
+    const std::vector<Number> & values,
+    std::vector<int> & targetfilter,
+    const int targetvalue
+) {
     long double total = 0;
     double count = 0;
     for(int i = 0; i < n; i++)
         if(targetfilter[i] == targetvalue) {
-            cout << revMapNode(i) << '\t' << values[i] << endl; // to print node lists
+            std::cout << revMapNode(i) << '\t' << values[i] << std::endl; // to print node lists
             total += values[i];
             count += 1;
         }
-    clog << "Weighted total: " << total << ", count: " << count << ", average: " << (double) total / count << endl;
+    std::clog << "Weighted total: " << total << ", count: " << count << ", average: " << (double) total / count << std::endl;
 }
 
 
 // print to binary file for python wrapper output
 template <typename Number>
-void printPythonNodeList(vector<Number> & values, const Scope scope = Scope::FULL, string filename = "") {
+void printPythonNodeList(
+    const std::vector<Number> & values,
+    const Scope scope = Scope::FULL,
+    std::string filename = ""
+) {
     //ofstream myFile;
     //myFile.open (filename.c_str(), ios::binary);
-    clog << "Printing in binary file..." << endl;
-    FILE* myFile;
-    myFile = fopen(filename.c_str(), "wb");
+    std::clog << "Printing in binary file..." << std::endl;
+    FILE *const myFile = fopen(filename.c_str(), "wb");
     Number total = 0;
     double count = 0;
     for(int i = 0; i < n; i++) {
         if(inScope(i, scope)) {
             double tmp2 = values[i];
-            //cerr << revMapNode(i) << '\t' << values[i] << endl;
+            //cerr << revMapNode(i) << '\t' << values[i] << std::endl;
             fwrite(&tmp2, sizeof (double), 1, myFile);
         }
     }
@@ -126,29 +146,29 @@ void printPythonNodeList(vector<Number> & values, const Scope scope = Scope::FUL
         }
     }
     fclose(myFile);
-    clog << "Weighted total: " << total << ", count: " << count << ", average: " << (double) total / count << endl;
+    std::clog << "Weighted total: " << total << ", count: " << count << ", average: " << (double) total / count << std::endl;
 }
 
 
 // print list of nodes according to some filter
 template <typename Number>
-void printNodes(vector<Number> & targetfilter, Number targetvalue) {
+void printNodes(const std::vector<Number> & targetfilter, const Number targetvalue) {
     for(int i = 0; i < n; i++)
         if(targetfilter[i] == targetvalue) {
-            cout << revMapNode(i) << endl;
+            std::cout << revMapNode(i) << std::endl;
         }
 }
 
 
 // print list of edges according to some filter
 template <typename Number>
-void printEdges(vector<Number> & targetfilter, Number targetvalue) {
+void printEdges(const std::vector<Number> & targetfilter, const Number targetvalue) {
     for(int i = 0; i < n; i++) {
         if(targetfilter[i] == targetvalue) {
             const int z = (signed)E[i].size();
             for(int j = 0; j < z; j++)
                 if(targetfilter[E[i][j]] == targetvalue)
-                    cout << revMapNode(i) << '\t' << revMapNode(E[i][j]) << endl;
+                    std::cout << revMapNode(i) << '\t' << revMapNode(E[i][j]) << std::endl;
         }
     }
 }

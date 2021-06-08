@@ -4,7 +4,12 @@
  * Centrality metrics
  */
 
-#include "Graph.h"
+#include <teexgraph/Graph.h>
+
+#include <vector>
+
+using namespace std;
+using namespace teexgraph;
 
 // Compute the closeness of node u - O(m)
 double Graph::closeness(const int u) {
