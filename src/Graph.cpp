@@ -946,18 +946,18 @@ int Graph::sccCount() {
 
 // write binary adjacency list to file
 void Graph::writeBinaryAdjacencyList(const Scope scope = Scope::FULL, string filename = "") {
-    FILE* myFile;
-    myFile = fopen(filename.c_str(), "wb");
+    FILE *const myFile = fopen(filename.c_str(), "wb");
 
 	for(int i=0; i<n; i++) {
         if(inScope(i, scope)) {
-			for(int j=0; j<(signed)E[i].size(); j++)
+			for(size_t j=0; j<E[i].size(); j++)
                 if(inScope(E[i][j], scope)) {
 					nodeidtype x = revMapNode(E[i][j]);
 					fwrite(&x,sizeof(int),1,myFile);
 				}
 		}
 	}
+
 	fclose(myFile);
 } // writeBinaryAdjacencyList
 
