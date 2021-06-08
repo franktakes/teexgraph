@@ -1,6 +1,6 @@
 /*
  * teexGraph --- by Frank Takes --- https://github.com/franktakes/teexgraph
- * 
+ *
  * Example main-file showing how to use teexGraph
  */
 
@@ -20,7 +20,7 @@ int main(const int argc, const char* argv[]) { Graph G; return listener(G); }
 int main(const int argc, const char* argv[]) {
 
     // catch no input graph given in command line parameter
-    if(argc < 2) {
+    if(argc != 2) {
         cerr << "Error: first argument should be the network filename." << endl;
         return 1;
     }
@@ -29,7 +29,7 @@ int main(const int argc, const char* argv[]) {
     Timer T;
     T.click();
 
-    // create and load graph from file. pass an int >= nodecount 
+    // create and load graph from file. pass an int >= nodecount
     // to optimize memory usage or if you want to have a nodecount > 10M nodes
     Graph G;
     if(!G.loadUndirected(argv[1]))
@@ -38,19 +38,19 @@ int main(const int argc, const char* argv[]) {
     // detect weakly connected components
     G.computeWCC();
 
-    // show some statistics of the network	
+    // show some statistics of the network
     stats(G); // from examples.cpp
     T.click();
 
     // compute the diameter of the largest WCC of this network
     cout << G.diameterBD() << endl;
     T.click();
-    
+
     // list the network's distance distribution
     showDistanceDistribution(G);
     T.click();
-        
-    return 0; 
+
+    return 0;
 }
 
-#endif 
+#endif

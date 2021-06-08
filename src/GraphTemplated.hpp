@@ -8,7 +8,7 @@
 template <typename Number>
 void printDistri(vector<Number> & values, const Scope scope = Scope::FULL) {
     vector<Number> intarray(n + 1, 0);
-    for(int i = 0; i < (signed)values.size(); i++) {
+    for(size_t i = 0; i < values.size(); i++) {
         if(inScope(i, scope)) {
             intarray[values[i]]++;
         }
@@ -22,11 +22,12 @@ template <typename Number>
 void printList(vector<Number> & values) {
     long double total = 0;
     double count = 0;
-    Number minvalue = INT_MAX;
-    Number maxvalue = -1;
-    int mini = INT_MAX;
-    int maxi = -1;
-    for(int i = 0; i < (signed)values.size(); i++)
+    //NOTE: Fails if values.size()==0
+    Number minvalue = values.front();
+    Number maxvalue = values.front();
+    size_t mini = 0;
+    size_t maxi = 0;
+    for(size_t i = 0; i < values.size(); i++)
         if(values[i] > 0) {
             mini = min(i, mini);
             maxi = max(i, maxi);
@@ -76,7 +77,7 @@ void printFilteredNodeList(vector< vector<Number> > & values, vector<int> & targ
     for(int i = 0; i < n; i++)
         if(targetfilter[i] == targetvalue) {
             cout << revMapNode(i);
-            for(int j = 0; j < (signed)values.size(); j++)
+            for(size_t j = 0; j < values.size(); j++)
                 cout << '\t' << values[j][i]; // to print node lists
             cout << endl;
             count += 1;
