@@ -1,12 +1,12 @@
 /*
  * teexGraph --- by Frank Takes --- https://github.com/franktakes/teexgraph
- * 
+ *
  * Graph class templated functions headerless
  */
 
 // print distribution of values in an array
 template <typename Number>
-void printDistri(vector<Number> & values, const Scope scope = FULL) {
+void printDistri(vector<Number> & values, const Scope scope = Scope::FULL) {
     vector<Number> intarray(n + 1, 0);
     for(int i = 0; i < (signed)values.size(); i++) {
         if(inScope(i, scope)) {
@@ -45,26 +45,26 @@ void printList(vector<Number> & values) {
 
 // print an array of values, tab-separated [node value]
 template <typename Number>
-void printNodeList(vector<Number> & values, const Scope scope = FULL) {
+void printNodeList(vector<Number> & values, const Scope scope = Scope::FULL) {
     vector<int> emptyfilter(n, 0);
-    if(scope == LSCC)
+    if(scope == Scope::LSCC)
         printFilteredNodeList(values, sccId, largestSCC);
-    else if(scope == LWCC)
+    else if(scope == Scope::LWCC)
         printFilteredNodeList(values, wccId, largestWCC);
-    else if(scope == FULL)
+    else if(scope == Scope::FULL)
         printFilteredNodeList(values, emptyfilter, 0);
 } // printNodeList
 
 
 // print arrays of values, tab-separated [node value]
 template <typename Number>
-void printNodeList(vector< vector<Number> > & values, const Scope scope = FULL) {
+void printNodeList(vector< vector<Number> > & values, const Scope scope = Scope::FULL) {
     vector<int> emptyfilter(n, 0);
-    if(scope == LSCC)
+    if(scope == Scope::LSCC)
         printFilteredNodeList(values, sccId, largestSCC);
-    else if(scope == LWCC)
+    else if(scope == Scope::LWCC)
         printFilteredNodeList(values, wccId, largestWCC);
-    else if(scope == FULL)
+    else if(scope == Scope::FULL)
         printFilteredNodeList(values, emptyfilter, 0);
 } // printNodeList
 
@@ -102,7 +102,7 @@ void printFilteredNodeList(vector<Number> & values, vector<int> & targetfilter, 
 
 // print to binary file for python wrapper output
 template <typename Number>
-void printPythonNodeList(vector<Number> & values, const Scope scope = FULL, string filename = "") {
+void printPythonNodeList(vector<Number> & values, const Scope scope = Scope::FULL, string filename = "") {
     //ofstream myFile;
     //myFile.open (filename.c_str(), ios::binary);
     clog << "Printing in binary file..." << endl;
@@ -152,4 +152,3 @@ void printEdges(vector<Number> & targetfilter, Number targetvalue) {
         }
     }
 }
-

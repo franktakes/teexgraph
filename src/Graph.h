@@ -1,6 +1,6 @@
 /*
  * teexGraph --- by Frank Takes --- https://github.com/franktakes/teexgraph
- * 
+ *
  * Graph class header
  */
 
@@ -26,12 +26,12 @@ using namespace std;
 typedef long nodeidtype;
 
 // default max. node count; change here or by passing int to Graph constructor
-const int MAXN = 10000000;
+const int MAXN = 40000000;
 
 // diferent scopes at which we can call functions: on the FULL network, on the
-// largest weakly (WCC) or strongly (SCC) connected component 
+// largest weakly (WCC) or strongly (SCC) connected component
 
-enum Scope {
+enum class Scope {
     FULL, LWCC, LSCC
 };
 
@@ -45,7 +45,7 @@ class Graph {
     bool loadUndirected(const string);
 	bool inScope(const int, const Scope);
 
-    // components        
+    // components
     void computeSCC();
     void computeWCC();
 
@@ -58,7 +58,7 @@ class Graph {
     long edges(const Scope);
     vector<int> & neighbors(const int);
     int nodes(const Scope);
-    int nodesInScc(const int);    
+    int nodesInScc(const int);
     int nodesInWcc(const int);
     double reciprocity(const Scope scope);
     vector<int> & revNeighbors(const int);
@@ -66,11 +66,11 @@ class Graph {
     long selfEdges(const Scope scope);
     int wccCount();
     int wccOf(const int);
-    
+
     // status
-    bool isLoaded();    
+    bool isLoaded();
     bool isUndirected();
-    bool isSortedAndUnique();    
+    bool isSortedAndUnique();
     bool sccComputed();
     bool wccComputed();
 
@@ -95,7 +95,7 @@ class Graph {
     vector<int> distances(const int, vector<long> &);
 	vector<int> alldistances(const int);
     double averageDistance(const Scope, const double);
-    
+
     // BoundingDiameters functions
     int centerSizeBD();
     int diameterAPSP();
@@ -105,7 +105,7 @@ class Graph {
     int peripherySizeBD();
     int radiusAPSP();
     int radiusBD();
-    
+
 	// centrality
     vector<double> betweennessCentrality(const Scope, const double);
     vector<double> closenessCentrality(const Scope, const double);
@@ -114,9 +114,11 @@ class Graph {
     vector<double> indegreeCentrality();
     vector<double> outdegreeCentrality();
     vector<double> pageRankCentrality();
-	
+
     // listener stuff
     void writeBinaryAdjacencyList(const Scope, string);
+
+    void makeUndirected();
 
   protected:
 
@@ -125,7 +127,6 @@ class Graph {
     bool edgeSlow(const int, const int);
     void goMarkSCC(const int, const int);
     void goVisitSCC(const int, vector<bool> &, stack<int> &, vector<int> &, vector<int> &);
-    void makeUndirected();
     int mapNode(const nodeidtype);
     nodeidtype revMapNode(const int);
     void sortEdgeList();
@@ -139,10 +140,10 @@ class Graph {
     vector< vector<int> > E; // list of out-neighbors of i 		
     vector< vector<int> > rE; // list of in-neighbors of i	
 
-    int n; // number of nodes										
+    int n; // number of nodes
     long m; // number of links
     vector<bool> hasSelfLoop; // true if node at index has a self-loop
-    long selfm; // number of self-loops (self-edges) 
+    long selfm; // number of self-loops (self-edges)
     int nexti; // next unused node id (finally equal to n)
 
     // graph type status
@@ -153,35 +154,34 @@ class Graph {
     bool doneWCC; // has the WCC for each node been computed?
 
     // Connected components
-    int largestWCC; // index of largest WCC 
-    int largestSCC; // index of largest SCC 
+    int largestWCC; // index of largest WCC
+    int largestSCC; // index of largest SCC
     int wccs; // number of WCCs
     int sccs; // number of WCCs
     vector<int> wccId; // WCC # of node i
-    vector<int> wccNodes; // nr. of nodes in WCC i		
-    vector<long> wccEdges; // nr. of edges in WCC i				
+    vector<int> wccNodes; // nr. of nodes in WCC i
+    vector<long> wccEdges; // nr. of edges in WCC i
     vector<int> sccId; // SCC # of node i
-    vector<int> sccNodes; // nr. of nodes in SCC i								
-    vector<long> sccEdges; // nr. of edges in SCC i		
-    
+    vector<int> sccNodes; // nr. of nodes in SCC i
+    vector<long> sccEdges; // nr. of edges in SCC i
+
     // BoundingDiameters functions:
     int eccentricity(const int);
     int extremaBounding(const int, const bool);
     int pruning();
 
-    // BoundingDiameters data:	
+    // BoundingDiameters data:
     vector<int> d; // for distance computation
     vector<int> pruned; // -1 if not pruned, 0 or larger value if pruned by that particular node
     vector<int> ecc_lower; // lower eccentricity bounds
     vector<int> ecc_upper; // upper eccentricity bounds
     vector<bool> candidate; // candidate set for contributing to computing the extreme distance measures
-  
+
 	// centrality
     double closeness(const int);
     vector<int> closenesses(const int, vector<long> &);
     int closenessSum(const int);
-	  
+
 };
 
 #endif /* GRAPH_H */
-
