@@ -14,11 +14,11 @@
 #include <fstream> // file reading/writing
 #include <iomanip> // setw()
 #include <iostream> // cout, clog, cerr, etc.
-#include <map> // mapping node id's
 #include <string> // filenames etc.
 #include "omp.h" // openMP paralellization
 #include <queue> // BFS
 #include <stack> // DFS
+#include <unordered_map> // mapping node id's
 #include <vector> // node data structure
 using namespace std;
 
@@ -134,8 +134,8 @@ class Graph {
 
     // graph data, always consistent
     int maxn; // maximal number of nodes
-    map<nodeidtype, int> nodeMapping; // mapping of input node-identifiers to 0, .., n-1
-    map<int, nodeidtype> revMapping; // mapping 0, .., n-1 to input node-identifiers 
+    unordered_map<nodeidtype, int> nodeMapping; // mapping of input node-identifiers to 0, .., n-1
+    unordered_map<int, nodeidtype> revMapping; // mapping 0, .., n-1 to input node-identifiers
     vector< vector<int> > E; // list of out-neighbors of i 		
     vector< vector<int> > rE; // list of in-neighbors of i	
 
