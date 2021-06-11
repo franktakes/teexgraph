@@ -108,21 +108,21 @@ int Graph::pruning() {
 // compute the graph's WCC diameter using BoundingDiameters
 int Graph::diameterBD() {
     const bool PRUNE = true;
-    return extremaBounding(1, PRUNE);
+    return extremaBounding(Extremum::DIAMETER, PRUNE);
 } // diameterBD
 
 
 // compute the graph's WCC radius using BoundingDiameters
 int Graph::radiusBD() {
     const bool PRUNE = true;
-    return extremaBounding(2, PRUNE);
+    return extremaBounding(Extremum::RADIUS, PRUNE);
 } // radiusBD
 
 
 // get the eccentricities of each of the nodes in the WCC of the graph
 vector<int> Graph::eccentricitiesBD() {
     const bool PRUNE = true;
-    extremaBounding(3, PRUNE);
+    extremaBounding(Extremum::ECCENTRICITIES, PRUNE);
     return ecc_lower;
 } // eccentricitiesBD
 
@@ -140,19 +140,19 @@ vector<int> Graph::eccentricitiesAPSP() {
 // compute the graph's WCC's periphery using BoundingDiameters
 int Graph::peripherySizeBD() {
     const bool PRUNE = true;
-    return extremaBounding(4, PRUNE);
+    return extremaBounding(Extremum::PERIPHERY_SIZE, PRUNE);
 } // peripheryBD
 
 
 // compute the graph's WCC's center using BoundingDiameters
 int Graph::centerSizeBD() {
     const bool PRUNE = true;
-    return extremaBounding(5, PRUNE);
+    return extremaBounding(Extremum::CENTER_SIZE, PRUNE);
 } // centerBD
 
 
 // compute extreme distance values in the WCC using BoundingDiameters
-int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
+int Graph::extremaBounding(Extremum TYPE = Extremum::DIAMETER, const bool PRUNE = false) {
 
     if(!isUndirected() || nodes(Scope::LWCC) < 2) {
         cerr << "BoundingDiameters is only implemented for undirected graphs' scope LWCC." << endl;
@@ -213,7 +213,7 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
         current_ecc = eccentricity(current);
 
         // output some status info (1)
-        if(TYPE != 3 || candidates % (1 + (nodes(Scope::LWCC) / 100)) == 0) {
+        if(TYPE != Extremum::ECCENTRICITIES || candidates % (1 + (nodes(Scope::LWCC) / 100)) == 0) {
             cerr << setw(3) << it
                     << ". Current: " << setw(8) << revMapNode(current)
                     << " (" << ecc_lower[current] << "/"
@@ -254,11 +254,11 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
             // disregard nodes that can no longer contribute
             if(candidate[i] && (
                     (ecc_lower[i] == ecc_upper[i]) || (
-                    (TYPE == 1 && ecc_upper[i] <= maxlower && ecc_lower[i]*2 >= maxupper) // diameter
-                    || (TYPE == 2 && ecc_lower[i] >= minupper && (ecc_upper[i] + 1) / 2 <= minlower)// radius
-                    || (TYPE == 4 && ecc_upper[i] < maxlower && ((maxlower == maxupper) || (ecc_lower[i]*2 > maxupper))) // periphery
-                    || (TYPE == 5 && ecc_lower[i] > minupper && ((minlower == minupper) || ((ecc_upper[i] + 1) / 2 < minlower))) // center
-                    || (TYPE == 3 && ecc_lower[i] == ecc_upper[i]) // eccentricity distribution
+                    (TYPE == Extremum::DIAMETER && ecc_upper[i] <= maxlower && ecc_lower[i]*2 >= maxupper) // diameter
+                    || (TYPE == Extremum::RADIUS && ecc_lower[i] >= minupper && (ecc_upper[i] + 1) / 2 <= minlower)// radius
+                    || (TYPE == Extremum::PERIPHERY_SIZE && ecc_upper[i] < maxlower && ((maxlower == maxupper) || (ecc_lower[i]*2 > maxupper))) // periphery
+                    || (TYPE == Extremum::CENTER_SIZE && ecc_lower[i] > minupper && ((minlower == minupper) || ((ecc_upper[i] + 1) / 2 < minlower))) // center
+                    || (TYPE == Extremum::ECCENTRICITIES && ecc_lower[i] == ecc_upper[i]) // eccentricity distribution
                     ))) {
                 candidate[i] = false;
                 candidates--;
@@ -282,7 +282,7 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
         }
 
         // output some status info (2)
-        if(TYPE != 3 || showstatus) {
+        if(TYPE != Extremum::ECCENTRICITIES || showstatus) {
             cerr << setw(3) << current_ecc << " - Bounds: min="
                     << minlower << "/" << minupper << " max=" << maxlower << "/" << maxupper
                     << " - Candidates: " << candidates << endl;
@@ -299,13 +299,13 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
             << ". Speed-up factor: " << (double) nodes(Scope::LWCC) / it << endl;
 
     // return the diameter
-    if(TYPE == 1) {
+    if(TYPE == Extremum::DIAMETER) {
         cerr << "\nDiameter value: ";
         return maxlower;
     }
 
     // return the radius
-    if(TYPE == 2) {
+    if(TYPE == Extremum::RADIUS) {
         cerr << "\nRadius value: ";
         return minupper;
     }
@@ -318,7 +318,7 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
     }
 
     // return the periphery size
-    if(TYPE == 4) {
+    if(TYPE == Extremum::PERIPHERY_SIZE) {
         int periphery = 0;
         for(int i = 0; i < nodes(Scope::FULL); i++) {
             if(ecc_lower[i] == maxlower)
@@ -329,7 +329,7 @@ int Graph::extremaBounding(const int TYPE = 1, const bool PRUNE = false) {
     }
 
     // return the center size
-    if(TYPE == 5) {
+    if(TYPE == Extremum::CENTER_SIZE) {
         int center = 0;
         for(int i = 0; i < nodes(Scope::FULL); i++) {
             if(ecc_upper[i] == minupper)

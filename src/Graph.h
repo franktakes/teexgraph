@@ -35,6 +35,14 @@ enum class Scope {
     FULL, LWCC, LSCC
 };
 
+enum class Extremum {
+    DIAMETER,
+    RADIUS,
+    ECCENTRICITIES,
+    PERIPHERY_SIZE,
+    CENTER_SIZE
+};
+
 class Graph {
   public:
     // initialization and loading
@@ -137,8 +145,8 @@ class Graph {
     int maxn; // maximal number of nodes
     unordered_map<nodeidtype, int> nodeMapping; // mapping of input node-identifiers to 0, .., n-1
     unordered_map<int, nodeidtype> revMapping; // mapping 0, .., n-1 to input node-identifiers
-    vector< vector<int> > E; // list of out-neighbors of i 		
-    vector< vector<int> > rE; // list of in-neighbors of i	
+    vector< vector<int> > E; // list of out-neighbors of i
+    vector< vector<int> > rE; // list of in-neighbors of i
 
     int n; // number of nodes
     long m; // number of links
@@ -167,7 +175,7 @@ class Graph {
 
     // BoundingDiameters functions:
     int eccentricity(const int);
-    int extremaBounding(const int, const bool);
+    int extremaBounding(Extremum, const bool);
     int pruning();
 
     // BoundingDiameters data:
