@@ -2,8 +2,7 @@ from copy import deepcopy
 
 from pyteexgraph import Graph, Scope
 
-g = Graph()
-g.loadDirected("/z/edge_list")
+g = Graph(filename="/z/edge_list", directed=True)
 print("Loaded", g.isLoaded())
 print("Average Degree", g.averageDegree(Scope.FULL))
 print("Diameter BD (fails because graph is directed", g.diameterBD())
