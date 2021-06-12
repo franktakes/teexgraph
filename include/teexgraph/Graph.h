@@ -15,7 +15,7 @@
 #include <iomanip> // setw()
 #include <iostream> // cout, clog, cerr, etc.
 #include <string> // filenames etc.
-#include "omp.h" // openMP paralellization
+#include <omp.h> // openMP paralellization
 #include <queue> // BFS
 #include <stack> // DFS
 #include <unordered_map> // mapping node id's
@@ -27,7 +27,7 @@ namespace teexgraph {
 typedef long nodeidtype;
 
 // default max. node count; change here or by passing int to Graph constructor
-const int MAXN = 10000000;
+const int MAXN = 60000000;
 
 // diferent scopes at which we can call functions: on the FULL network, on the
 // largest weakly (WCC) or strongly (SCC) connected component
@@ -49,9 +49,32 @@ class Graph {
     // initialization and loading
     Graph();
     Graph(const int);
+    Graph(const std::string& filename, const bool directed);
+    template<
+        typename Integer,
+        typename = typename std::enable_if<std::is_integral<Integer>::value, Integer>::type
+    >
+    Graph(
+        const std::vector<Integer>& sources,
+        const std::vector<Integer>& targets
+    ){
+        loadDirectedFromVectors(sources, targets);
+    }
+
     void clear();
+
+    // Loaders
     bool loadDirected(const std::string);
     bool loadUndirected(const std::string);
+    template<
+        typename Integer,
+        typename = typename std::enable_if<std::is_integral<Integer>::value, Integer>::type
+    >
+    void loadDirectedFromVectors(
+        const std::vector<Integer>& sources,
+        const std::vector<Integer>& targets
+    );
+
 	bool inScope(const int, const Scope);
 
     // components
@@ -158,7 +181,7 @@ class Graph {
     int nexti; // next unused node id (finally equal to n)
 
     // graph type status
-    bool loaded; // is the graph already loaded?
+    bool loaded = false; // is the graph already loaded?
     bool sortedandunique; // are the edge lists sorted and with unique values?
     bool undirected; // does the graph have a symmetric edge set?
     bool doneSCC; // has the SCC for each node been computed?
@@ -197,6 +220,51 @@ class Graph {
     std::vector<int> closenesses(const int, std::vector<long> &);
     int closenessSum(const int);
 };
+
+
+
+
+template<
+    typename Integer,
+    typename = typename std::enable_if<std::is_integral<Integer>::value, Integer>::type
+>
+void Graph::loadDirectedFromVectors(
+    const std::vector<Integer>& sources,
+    const std::vector<Integer>& targets
+){
+    if(sources.size()!=targets.size()){
+        throw std::runtime_error("Sources and Targets must be of the same length!");
+    }
+    long edgesAdded = 0;
+    long edgesSkipped = 0;
+
+    // check if not already loaded
+    if(loaded) {
+        throw std::runtime_error("Graph already loaded!");
+    }
+
+    maxn = sources.size();
+    clear();
+
+    // load the edge list
+    for(size_t i=0;i<sources.size();i++){
+        if(addEdge(mapNode(sources[i]), mapNode(targets[i]))){
+            edgesAdded++;
+        } else {
+            edgesSkipped++;
+        }
+    }
+
+    loaded = true;
+
+    if(edgesSkipped == 0) {
+        sortEdgeList();
+    } else {
+        throw std::runtime_error("Out-of-bounds: increase maxn in Graph.h!");
+    }
+}
+
+
 
 }
 
