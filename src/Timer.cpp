@@ -5,9 +5,11 @@
  * Create the object Timer T and run T.click() to see time since the last click.
  */
 
-#include "Timer.h"
+#include <teexgraph/Timer.h>
+
 #include "omp.h"
 #include <iostream>
+
 using namespace std;
 
 // show and restart timer

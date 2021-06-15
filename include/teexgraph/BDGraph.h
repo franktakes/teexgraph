@@ -1,8 +1,9 @@
 /*
  * teexGraph --- by Frank Takes --- https://github.com/franktakes/teexgraph
- * 
+ *
  * BDGraph.h
  */
 
-#include "Graph.h"
+#pragma once
 
+#include <teexgraph/Graph.h>

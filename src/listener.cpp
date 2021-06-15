@@ -4,12 +4,14 @@
  * Listener for standard input/output dialogs with the code
  */
 
-#include "listener.h"
+#include <teexgraph/listener.h>
 
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
+
 using namespace std;
+using namespace teexgraph;
 
 // listener function
 int listener(Graph & G) {
