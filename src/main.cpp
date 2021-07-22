@@ -42,14 +42,19 @@ int main(const int argc, const char* argv[]) {
 
     // show some statistics of the network
     stats(G); // from examples.cpp
+	//computeIntensiveStats(G); // from examples.cpp; 
     T.click();
 
     // compute the diameter of the largest WCC of this network
-    cout << G.diameterBD() << endl;
+	boundingDiameters(G); // from examples.cpp
     T.click();
 
     // list the network's distance distribution
-    showDistanceDistribution(G);
+    //distanceDistribution(G); // from examples.cpp; compute-heavy
+    T.click();
+
+    // list the network's degree distribution
+    //degreeDistribution(G); // from examples.cpp
     T.click();
 
     return 0;

@@ -13,7 +13,7 @@ using namespace std;
 namespace teexgraph {
 
 // output how often each distance value occurs
-void showDistanceDistribution(Graph & G) {
+void distanceDistribution(Graph & G) {
 	vector<long> distances;
 	// second parameter "1.0" can be used to state a sampling percentage
     if(G.wccComputed())
@@ -28,54 +28,72 @@ void stats(Graph & G) {
     const int LEFTWIDTH = 40;
 
     // the following metrics are linear in computation time and "free" to show"
-    clog << setw(LEFTWIDTH) << "Nodes n: " << G.nodes(Scope::FULL) << endl;
-    clog << setw(LEFTWIDTH) << "Links m: " << G.edges(Scope::FULL) << endl;
-    clog << setw(LEFTWIDTH) << "Self-edges: " << G.selfEdges(Scope::FULL) << endl;
+    cout << setw(LEFTWIDTH) << "Nodes n: " << G.nodes(Scope::FULL) << endl;
+    cout << setw(LEFTWIDTH) << "Links m: " << G.edges(Scope::FULL) << endl;
+    cout << setw(LEFTWIDTH) << "Self-edges: " << G.selfEdges(Scope::FULL) << endl;
     if(G.isUndirected())
-        clog << setw(LEFTWIDTH) << "Undirected edges: " << G.selfEdges(Scope::FULL) + ((G.edges(Scope::FULL) - G.selfEdges(Scope::FULL)) / 2) << endl;
-    clog << setw(LEFTWIDTH) << "Average degree: " << G.averageDegree(Scope::FULL) << endl;
-    clog << setw(LEFTWIDTH) << "Density: " << G.density(Scope::FULL) << endl;
+        cout << setw(LEFTWIDTH) << "Undirected edges: " << G.selfEdges(Scope::FULL) + ((G.edges(Scope::FULL) - G.selfEdges(Scope::FULL)) / 2) << endl;
+    cout << setw(LEFTWIDTH) << "Average degree: " << G.averageDegree(Scope::FULL) << endl;
+    cout << setw(LEFTWIDTH) << "Density: " << G.density(Scope::FULL) << endl;
 
     // the following metrics are not linear in computation time
-    /*
+    
     if(!G.isUndirected())
-        clog << setw(LEFTWIDTH) << "Reciprocity: " << G.reciprocity(Scope::FULL) << endl;
-    clog << setw(LEFTWIDTH) << "Triangles: " << G.triangles() << endl;
-    clog << setw(LEFTWIDTH) << "Wedges: " << G.wedges() << endl;
-    clog << setw(LEFTWIDTH) << "Graph clustering coefficient: " << G.graphClusteringCoefficient(Scope::FULL) << endl;
-    clog << setw(LEFTWIDTH) << "Average local clustering coefficient: " << G.averageClusteringCoefficient(Scope::FULL) << endl;
-    clog << setw(LEFTWIDTH) << "Average distance: " << G.averageDistance(Scope::FULL, 1.0) << endl;
-    */
+        cout << setw(LEFTWIDTH) << "Reciprocity: " << G.reciprocity(Scope::FULL) << endl;
 
-    clog << endl;
-    clog << setw(LEFTWIDTH) << "Sorted & unique edge lists: " << (G.isSortedAndUnique() ? "Yes" : "No") << endl;
-    clog << setw(LEFTWIDTH) << "Undirected/symmetric edge set: " << (G.isUndirected() ? "Yes" : "No") << endl;
-    clog << setw(LEFTWIDTH) << "WCC computed: " << (G.wccComputed() ? "Yes" : "No") << endl;
-    clog << setw(LEFTWIDTH) << "SCC computed: " << (G.sccComputed() ? "Yes" : "No") << endl;
-    clog << endl;
+    cout << endl;
+    cout << setw(LEFTWIDTH) << "Sorted & unique edge lists: " << (G.isSortedAndUnique() ? "Yes" : "No") << endl;
+    cout << setw(LEFTWIDTH) << "Undirected/symmetric edge set: " << (G.isUndirected() ? "Yes" : "No") << endl;
+    cout << setw(LEFTWIDTH) << "WCC computed: " << (G.wccComputed() ? "Yes" : "No") << endl;
+    cout << setw(LEFTWIDTH) << "SCC computed: " << (G.sccComputed() ? "Yes" : "No") << endl;
+    cout << endl;
 
     if(G.sccComputed()) {
-        clog << setw(LEFTWIDTH) << "Strongly connected components: " << G.sccCount() << endl;
-        clog << setw(LEFTWIDTH) << "SCC nodes n: " << G.nodes(Scope::LSCC) << endl;
-        clog << setw(LEFTWIDTH) << "SCC links m: " << G.edges(Scope::LSCC) << endl;
-        clog << setw(LEFTWIDTH) << "SCC self-edges: " << G.selfEdges(Scope::LSCC) << endl;
-        clog << setw(LEFTWIDTH) << "SCC average degree: " << G.averageDegree(Scope::LSCC) << endl;
-        clog << setw(LEFTWIDTH) << "SCC density: " << G.density(Scope::LSCC) << endl;
-        clog << endl;
+        cout << setw(LEFTWIDTH) << "Strongly connected components: " << G.sccCount() << endl;
+        cout << setw(LEFTWIDTH) << "SCC nodes n: " << G.nodes(Scope::LSCC) << endl;
+        cout << setw(LEFTWIDTH) << "SCC links m: " << G.edges(Scope::LSCC) << endl;
+        cout << setw(LEFTWIDTH) << "SCC self-edges: " << G.selfEdges(Scope::LSCC) << endl;
+        cout << setw(LEFTWIDTH) << "SCC average degree: " << G.averageDegree(Scope::LSCC) << endl;
+        cout << setw(LEFTWIDTH) << "SCC density: " << G.density(Scope::LSCC) << endl;
+        cout << endl;
     }
 
     if(G.wccComputed()) {
-        clog << setw(LEFTWIDTH) << "Weakly connected components: " << G.wccCount() << endl;
-        clog << setw(LEFTWIDTH) << "WCC nodes n: " << G.nodes(Scope::LWCC) << endl;
-        clog << setw(LEFTWIDTH) << "WCC links m: " << G.edges(Scope::LWCC) << endl;
-        clog << setw(LEFTWIDTH) << "WCC self-edges: " << G.selfEdges(Scope::LWCC) << endl;
+        cout << setw(LEFTWIDTH) << "Weakly connected components: " << G.wccCount() << endl;
+        cout << setw(LEFTWIDTH) << "WCC nodes n: " << G.nodes(Scope::LWCC) << endl;
+        cout << setw(LEFTWIDTH) << "WCC links m: " << G.edges(Scope::LWCC) << endl;
+        cout << setw(LEFTWIDTH) << "WCC self-edges: " << G.selfEdges(Scope::LWCC) << endl;
         if(G.isUndirected())
-            clog << setw(LEFTWIDTH) << "WCC undirected edges: " << G.selfEdges(Scope::LWCC) + ((G.edges(Scope::LWCC) - G.selfEdges(Scope::LWCC)) / 2) << endl;
-        clog << setw(LEFTWIDTH) << "WCC average degree: " << G.averageDegree(Scope::LWCC) << endl;
-        clog << setw(LEFTWIDTH) << "WCC density: " << G.density(Scope::LWCC) << endl;
-        clog << endl;
+            cout << setw(LEFTWIDTH) << "WCC undirected edges: " << G.selfEdges(Scope::LWCC) + ((G.edges(Scope::LWCC) - G.selfEdges(Scope::LWCC)) / 2) << endl;
+        cout << setw(LEFTWIDTH) << "WCC average degree: " << G.averageDegree(Scope::LWCC) << endl;
+        cout << setw(LEFTWIDTH) << "WCC density: " << G.density(Scope::LWCC) << endl;
+        cout << endl;
     }
-    clog << endl;
+    //cout << endl;
 } // stats
+
+void computeIntensiveStats(Graph & G) {
+    const int LEFTWIDTH = 40;
+    
+    // exact computation, in parallel
+    cout << setw(LEFTWIDTH) << "Triangles: " << G.triangles(Scope::FULL) << endl;
+    cout << setw(LEFTWIDTH) << "Wedges: " << G.wedges(Scope::FULL) << endl;
+    cout << setw(LEFTWIDTH) << "Graph clustering coefficient: " << G.graphClusteringCoefficient(Scope::FULL) << endl;
+    cout << setw(LEFTWIDTH) << "Average local clustering coefficient: " << G.averageClusteringCoefficient(Scope::FULL) << endl;
+    
+    // approximated, in parallel (also output with distanceDistribution() function below)
+    //cout << setw(LEFTWIDTH) << "Average distance: " << G.averageDistance(FULL, 200) << endl;
+}
+
+void degreeDistribution(Graph & G) {
+    vector<long> degs = G.outdegreeDistribution(Scope::LWCC);
+    G.printList(degs);
+}
+
+void boundingDiameters(Graph & G) {
+    const int LEFTWIDTH = 40;
+	int diameter = G.diameterBD();
+    cout << endl << setw(LEFTWIDTH) << "WCC diameter: " << diameter << endl;
+}
 
 }

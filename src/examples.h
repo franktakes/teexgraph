@@ -10,7 +10,10 @@
 
 namespace teexgraph {
 
-void showDistanceDistribution(Graph & G);
+void boundingDiameters(Graph & G);
+void computeIntensiveStats(Graph & G);
+void degreeDistribution(Graph & G);
+void distanceDistribution(Graph & G);
 void stats(Graph & G);
 
 }
