@@ -82,7 +82,7 @@ void computeIntensiveStats(Graph & G) {
     cout << setw(LEFTWIDTH) << "Average local clustering coefficient: " << G.averageClusteringCoefficient(Scope::FULL) << endl;
     
     // approximated, in parallel (also output with distanceDistribution() function below)
-    //cout << setw(LEFTWIDTH) << "Average distance: " << G.averageDistance(FULL, 200) << endl;
+    //cout << setw(LEFTWIDTH) << "Average distance: " << G.averageDistance(Scope::FULL, 200) << endl;
 }
 
 void degreeDistribution(Graph & G) {
@@ -93,7 +93,13 @@ void degreeDistribution(Graph & G) {
 void boundingDiameters(Graph & G) {
     const int LEFTWIDTH = 40;
 	int diameter = G.diameterBD();
-    cout << endl << setw(LEFTWIDTH) << "WCC diameter: " << diameter << endl;
+    cout << setw(LEFTWIDTH) << "WCC diameter: " << diameter << endl;
+	int radius = G.radiusBD();
+    cout << setw(LEFTWIDTH) << "WCC radius: " << radius << endl;
+	int periphery = G.peripherySizeBD();
+    cout << setw(LEFTWIDTH) << "WCC periphery size: " << periphery << endl;
+	int center = G.centerSizeBD();
+    cout << setw(LEFTWIDTH) << "WCC center size: " << center << endl;
 }
 
 }
