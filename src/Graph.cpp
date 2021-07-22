@@ -847,8 +847,8 @@ vector<long> Graph::distanceDistribution(const Scope scope = Scope::FULL, const 
     int donecount = 0;
     if(samplesize < 1.0) {
         maxi = (double) nodes(scope) * samplesize;
-    } else if(samplesize > 1.0 && samplesize < nodes(scope)) {
-        maxi = samplesize;
+    } else if(samplesize > 1.0) { 
+        maxi = min((int)samplesize,nodes(scope));
         samplesize = (double) maxi / (double) nodes(scope);
     }
     clog << "Computing distance distribution (based on a " << samplesize * 100
