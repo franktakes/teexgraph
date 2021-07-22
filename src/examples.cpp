@@ -92,14 +92,22 @@ void degreeDistribution(Graph & G) {
 
 void boundingDiameters(Graph & G) {
     const int LEFTWIDTH = 40;
+	
 	int diameter = G.diameterBD();
     cout << setw(LEFTWIDTH) << "WCC diameter: " << diameter << endl;
-	int radius = G.radiusBD();
-    cout << setw(LEFTWIDTH) << "WCC radius: " << radius << endl;
-	int periphery = G.peripherySizeBD();
-    cout << setw(LEFTWIDTH) << "WCC periphery size: " << periphery << endl;
-	int center = G.centerSizeBD();
-    cout << setw(LEFTWIDTH) << "WCC center size: " << center << endl;
+
+	//int radius = G.radiusBD();
+    //cout << setw(LEFTWIDTH) << "WCC radius: " << radius << endl;
+
+	//int periphery = G.peripherySizeBD();
+    //cout << setw(LEFTWIDTH) << "WCC periphery size: " << periphery << endl;
+	
+	//int center = G.centerSizeBD();
+    //cout << setw(LEFTWIDTH) << "WCC center size: " << center << endl;
+
+	// eccentricity distribution
+    //vector<int> eccs = G.eccentricitiesBD();
+	//G.printDistri(eccs, Scope::LWCC);
 }
 
 }
