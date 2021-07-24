@@ -960,3 +960,82 @@ void Graph::writeBinaryAdjacencyList(const Scope scope = Scope::FULL, string fil
 	}
 	fclose(myFile);
 } // writeBinaryAdjacencyList
+
+
+// get an array containing a sample of samples nodes
+vector<int> Graph::getSample(const int samples, const Scope scope = Scope::FULL) {
+    vector<bool> done(n, false);
+    vector<int> todo;
+    int a;
+    
+    // fill todo array ...
+    if(samples < nodes(scope)) {
+        // ... with samples random node numbers
+        for(int i=0; i<samples; i++) {
+            a = 0;
+            while(done[a] || !inScope(a, scope)) 
+                a = rand() % n;
+            todo.push_back(a);
+            done[a] = true;
+        }       
+    } 
+    else {
+        // with numbers 0 to n-1
+        for(int i=0; i<n; i++) 
+            if(inScope(i, scope)) {
+                todo.push_back(i);
+                //done[i] = true;
+            }
+    }
+    return todo;
+}
+
+double Graph::setSampleSize(int & samples, const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) {
+    
+    double samplesize = inputsamplesize;
+    
+    // this is only retained if samplesze is exactly 1.0
+    samples = nodes(scope);
+    
+    // sampling percentage was given
+    if(samplesize < 1.0) {
+        samples = (double) nodes(scope) * samplesize;
+    } else if(samplesize > 1.0) { // && samplesize < nodes(scope)) {
+        samples = min((int)samplesize,nodes(scope));// catch sample size larger than number of nodes
+        samplesize = (double) samples / (double) nodes(scope);
+    }
+
+	return samplesize; // and call by reference, samples
+}
+
+// approximate the node clustering coefficient for each node
+vector<double> Graph::approximateLocalClustering(vector<int> & todo) {
+
+    vector<double> temparray((signed)todo.size(), -1);
+    double temp;
+	
+#pragma omp parallel for schedule(dynamic, 1) private(temp)
+    for(int i = 0; i < (signed)todo.size(); i++) {
+        if(todo.size() >= 100 && i % ((signed)todo.size() / 20) == 0) // show status % without div by 0 errors
+            clog << " " << i / ((signed)todo.size() / 100) << "%";
+        temp = nodeClusteringCoefficient(todo[i]);
+        temparray[i] = temp;
+    }
+
+    return temparray;
+} // approximateLocalClustering
+
+
+// approximate the graph's average local clustering coefficient
+double Graph::approximateAverageClusteringCoefficient(const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) {
+    int samples = 0;
+    double samplesize = setSampleSize(samples, scope, inputsamplesize); // also modifies samples
+    vector<int> todo = getSample(samples, scope);
+    vector<double> values = approximateLocalClustering(todo);
+    long double total = 0;
+    for(int i = 0; i < (signed)todo.size(); i++)
+       total += (long double) values[i];
+
+    return (total / samplesize) / (long double) nodes(scope);
+} // approximateAverageClusteringCoefficient
+

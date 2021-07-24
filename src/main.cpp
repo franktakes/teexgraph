@@ -51,12 +51,16 @@ int main(const int argc, const char* argv[]) {
 
     // list the network's distance distribution
     //distanceDistribution(G); // from examples.cpp; compute-heavy
-    T.click();
+    //T.click();
 
     // list the network's degree distribution
     //degreeDistribution(G); // from examples.cpp
-    T.click();
+    //T.click();
 
+	// list some statistics related to clustering coefficients
+	//clusteringStats(G); // from examples.cpp
+	//T.click();
+	
     return 0;
 }
 

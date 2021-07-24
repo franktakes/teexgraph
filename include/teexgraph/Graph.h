@@ -85,7 +85,9 @@ class Graph {
 
     // triangles and clustering
     double averageClusteringCoefficient(const Scope);
+    double approximateAverageClusteringCoefficient(const Scope, const double);    
     double graphClusteringCoefficient(const Scope);
+    std::vector<double> approximateLocalClustering(std::vector<int> &);    
     std::vector<double> localClustering(const Scope);
     double nodeClusteringCoefficient(const int);
     long triangles(const Scope);
@@ -173,6 +175,10 @@ class Graph {
     std::vector<int> sccId; // SCC # of node i
     std::vector<int> sccNodes; // nr. of nodes in SCC i
     std::vector<long> sccEdges; // nr. of edges in SCC i
+
+	// helpers for sampling
+	double setSampleSize(int &, const Scope, const double);
+	std::vector<int> getSample(const int, const Scope);
 
     // BoundingDiameters functions:
     int eccentricity(const int);
