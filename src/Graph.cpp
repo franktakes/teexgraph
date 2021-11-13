@@ -834,53 +834,30 @@ double Graph::averageDistance(const Scope scope = Scope::FULL, const double inpu
 // print the distance distribution [distance frequency]
 vector<long> Graph::distanceDistribution(const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) {
 
-    double samplesize = inputsamplesize;
-
     if(nodes(scope) < 2)
         return vector<long>(1, 0);
-
+    
+    int a;    
     const int cpus = omp_get_num_procs();
-    int tid, a, maxi = nodes(scope);
+    int tid, samples = 0;
     double total = 0;
     vector< vector<long> > longarray(cpus, vector<long>(n, 0));
-    vector<bool> done(n + 1, false); // for sampling
-    int donecount = 0;
-    if(samplesize < 1.0) {
-        maxi = (double) nodes(scope) * samplesize;
-    } else if(samplesize > 1.0) { 
-        maxi = min((int)samplesize,nodes(scope));
-        samplesize = (double) maxi / (double) nodes(scope);
-    }
-    clog << "Computing distance distribution (based on a " << samplesize * 100
-            << "% sample of " << maxi << " nodes) with " << cpus << " CPUs..." << endl;
+    
+    double samplesize = setSampleSize(samples, scope, inputsamplesize); // also modifies samples
+    vector<int> todo = getSample(samples, scope);
+	
+	clog << "Computing distance distribution (based on a " << samplesize * 100
+            << "% sample of " << samples << " nodes = " << (signed)todo.size() << " nodes) with " << cpus << " CPUs..." << endl;
 
 #pragma omp parallel for schedule(dynamic, 1) private(tid, a)
-    for(int i = 0; i < n; i++) {
-        if(donecount >= maxi)
-            continue;
+    for(int i=0; i<(signed)todo.size(); i++) {
+    	a = todo[i];
         tid = omp_get_thread_num();
-        if(donecount % max(1, maxi / 20) == 0) // show status % without div by 0 errors
-            clog << " " << donecount / max(1, maxi / 100) << "%";
-
-        // sampled
-        if(samplesize < 1.0) {
-            a = n;
-            while(done[a] || !inScope(a, scope)) {
-                a = rand() % n;
-            }
-            distances(a, longarray[tid]);
-            donecount++;
-            done[a] = true;
-        }// exact computation
-        else {
-            if(!inScope(i, scope)) {
-                continue;
-            }
-            distances(i, longarray[tid]);
-            donecount++;
-        }
-
+        if(samples > 100 && i % (samples / 20) == 0) // show status % without div by 0 errors
+            clog << " " << i / (samples / 100) << "%";
+        distances(a, longarray[tid]);
     } // for
+
 
     clog << " " << "Done." << endl;
 
@@ -892,8 +869,6 @@ vector<long> Graph::distanceDistribution(const Scope scope = Scope::FULL, const 
             total += (i * longarray[j][i]);
         }
     }
-
-    //printList(alllongarray);
 
     return alllongarray;
 } // distanceDistribution
@@ -1039,3 +1014,6 @@ double Graph::approximateAverageClusteringCoefficient(const Scope scope = Scope:
     return (total / samplesize) / (long double) nodes(scope);
 } // approximateAverageClusteringCoefficient
 
+
+
+    
