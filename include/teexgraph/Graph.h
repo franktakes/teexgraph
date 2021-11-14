@@ -75,6 +75,7 @@ class Graph {
         const std::vector<Integer>& targets
     );
 
+    void makeUndirected();
     bool inScope(const int, const Scope) const;
 
     // components
@@ -148,11 +149,6 @@ class Graph {
     std::vector<double> indegreeCentrality();
     std::vector<double> outdegreeCentrality();
     std::vector<double> pageRankCentrality();
-
-    // listener stuff
-    void writeBinaryAdjacencyList(const Scope, std::string) const;
-
-    void makeUndirected();
 
   protected:
 

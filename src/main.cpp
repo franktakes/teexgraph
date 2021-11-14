@@ -10,15 +10,8 @@
 using namespace std;
 using namespace teexgraph;
 
-// if compiled with "make listener", start the listener and ignore this file
-#if runlistener == 1
-#include "listener.h"
-int main(const int argc, const char* argv[]) { Graph G; return listener(G); }
-
-#else
-
-// if compiled with reguler "make" command, run this main function
 #include "examples.h"
+
 int main(const int argc, const char* argv[]) {
 
     // catch no input graph given in command line parameter
@@ -63,5 +56,3 @@ int main(const int argc, const char* argv[]) {
 
     return 0;
 }
-
-#endif

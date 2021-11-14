@@ -126,7 +126,5 @@ PYBIND11_MODULE(pyteexgraph, m) {
     // (node)list, distribution and stdout/binary output formats
 #include "GraphTemplated.hpp"
 
-    // listener stuff
-    void writeBinaryAdjacencyList(const Scope, string);
 */
 }
