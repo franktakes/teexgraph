@@ -56,8 +56,8 @@ int Graph::mapNode(const nodeidtype i) {
 
 
 // reverse map node id to original node number
-nodeidtype Graph::revMapNode(const int i) {
-    return revMapping[i];
+nodeidtype Graph::revMapNode(const int i) const {
+    return revMapping.at(i);
 } // revMapNode
 
 
@@ -190,8 +190,7 @@ bool Graph::edge(const int a, const int b) {
 
 // check if there is an edge from a to b without requiring sortid list - O(outdegree(a))
 bool Graph::edgeSlow(const int a, const int b) {
-    const int z = E[a].size();
-    for(int j = 0; j < z; j++)
+    for(int j = 0; j < E[a].size(); j++)
         if(E[a][j] == b)
             return true;
     return false;
@@ -225,7 +224,7 @@ void Graph::sortEdgeList() {
 
 
 // check if node is in particular scope
-bool Graph::inScope(const int u, const Scope scope) {
+bool Graph::inScope(const int u, const Scope scope) const {
     return
     (scope == Scope::FULL ||
             (scope == Scope::LWCC && doneWCC && wccId[u] == largestWCC) ||
@@ -234,7 +233,7 @@ bool Graph::inScope(const int u, const Scope scope) {
 
 
 // Get the number of nodes n
-int Graph::nodes(const Scope scope = Scope::FULL) {
+int Graph::nodes(const Scope scope = Scope::FULL) const {
     if(scope == Scope::FULL) {
         return n;
     } else if(scope == Scope::LWCC && doneWCC) {
@@ -246,21 +245,21 @@ int Graph::nodes(const Scope scope = Scope::FULL) {
 } // nodes
 
 // Get the number of nodes in particular WCC
-int Graph::nodesInWcc(const int WCCId) {
+int Graph::nodesInWcc(const int WCCId) const {
     if(doneWCC)
         return wccNodes[WCCId];
     return -1;
 } // nodes
 
 // Get the number of nodes in particular WCC
-int Graph::wccOf(const int u) {
+int Graph::wccOf(const int u) const {
     if(doneWCC)
         return wccId[u];
     return -1;
 } // nodes
 
 // Get the number of links m
-long Graph::edges(const Scope scope = Scope::FULL) {
+long Graph::edges(const Scope scope = Scope::FULL) const {
     if(scope == Scope::FULL) {
         return m;
     } else if(scope == Scope::LWCC && doneWCC) {
@@ -273,7 +272,7 @@ long Graph::edges(const Scope scope = Scope::FULL) {
 
 
 // Get the number of self-links
-long Graph::selfEdges(const Scope scope = Scope::FULL) {
+long Graph::selfEdges(const Scope scope = Scope::FULL) const {
     if(scope == Scope::FULL)
         return selfm;
     else if(scope == Scope::LWCC && doneWCC) {
@@ -512,7 +511,7 @@ double Graph::reciprocity(const Scope scope = Scope::FULL) {
 
 
 // compute the density: the number of edges / the maximum number of edges
-double Graph::density(const Scope scope) {
+double Graph::density(const Scope scope) const {
     if(scope == Scope::FULL) {
         int noselfnodeswitch = 1;
         if(selfEdges(Scope::FULL) > 0)
@@ -540,7 +539,7 @@ double Graph::density(const Scope scope) {
 
 
 // average degree in a scope
-double Graph::averageDegree(const Scope scope) {
+double Graph::averageDegree(const Scope scope) const {
     if(scope == Scope::FULL) {
         if(undirected)
             return((double) m / (double) n);
@@ -750,7 +749,7 @@ vector<long> Graph::indegreeDistribution(const Scope scope = Scope::FULL) {
 
 
 // compute the distance between node u and v --- O(m)
-int Graph::distance(const int u, const int v) {
+int Graph::distance(const int u, const int v) const {
     int current, z;
     queue<int> q;
     vector<int> d(n, -1);
@@ -797,7 +796,7 @@ vector<int> Graph::alldistances(const int u) {
 
 
 // parallel-ready function to compute all distances and update dtotals
-vector<int> Graph::distances(const int u, vector<long> & dtotals) {
+vector<int> Graph::distances(const int u, vector<long> & dtotals) const {
     int current, z;
     queue<int> q;
     vector<int> d(nodes(Scope::FULL), -1);
@@ -819,7 +818,7 @@ vector<int> Graph::distances(const int u, vector<long> & dtotals) {
     }
     return d;
 } // distances
-double Graph::averageDistance(const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) {
+double Graph::averageDistance(const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) const {
     vector<long> result;
     long res = 0;
     result = distanceDistribution(scope, inputsamplesize);
@@ -832,7 +831,7 @@ double Graph::averageDistance(const Scope scope = Scope::FULL, const double inpu
 
 
 // print the distance distribution [distance frequency]
-vector<long> Graph::distanceDistribution(const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) {
+vector<long> Graph::distanceDistribution(const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) const {
 
     if(nodes(scope) < 2)
         return vector<long>(1, 0);
@@ -842,12 +841,12 @@ vector<long> Graph::distanceDistribution(const Scope scope = Scope::FULL, const 
     int tid, samples = 0;
     double total = 0;
     vector< vector<long> > longarray(cpus, vector<long>(n, 0));
-    
+
     double samplesize = setSampleSize(samples, scope, inputsamplesize); // also modifies samples
     vector<int> todo = getSample(samples, scope);
 	
-	clog << "Computing distance distribution (based on a " << samplesize * 100
-            << "% sample of " << samples << " nodes = " << (signed)todo.size() << " nodes) with " << cpus << " CPUs..." << endl;
+    clog << "Computing distance distribution (based on a " << samplesize * 100
+         << "% sample of " << samples << " nodes = " << (signed)todo.size() << " nodes) with " << cpus << " CPUs..." << endl
 
 #pragma omp parallel for schedule(dynamic, 1) private(tid, a)
     for(int i=0; i<(signed)todo.size(); i++) {
@@ -874,55 +873,54 @@ vector<long> Graph::distanceDistribution(const Scope scope = Scope::FULL, const 
 } // distanceDistribution
 
 // return reference to vector with neighbors of a node
-vector<int> & Graph::neighbors(const int i) {
-    return E[i];
+const vector<int> & Graph::neighbors(const int i) const {
+    return E.at(i);
 } // neighbors
 
 // return reference to vector with reversed neighbors of a node
-vector<int> & Graph::revNeighbors(const int i) {
-    return rE[i];
+const vector<int> & Graph::revNeighbors(const int i) const {
+    return rE.at(i);
 } // revNeighbors
 
 // check if graph is loaded
-bool Graph::isLoaded() {
+bool Graph::isLoaded() const {
     return loaded;
 } // isUndirected
 
 
 // check if graph is undirected
-bool Graph::isUndirected() {
+bool Graph::isUndirected() const {
     return undirected;
 } // isUndirected
 
 // check if graph is sorted and unique
-bool Graph::isSortedAndUnique() {
+bool Graph::isSortedAndUnique() const {
     return sortedandunique;
 } // isSortedAndUnique
 
 // check if graph's wcc is computed
-bool Graph::wccComputed() {
+bool Graph::wccComputed() const {
     return doneWCC;
 } // wccComputed
 
 // check if graph's scc is computed
-bool Graph::sccComputed() {
+bool Graph::sccComputed() const {
     return doneSCC;
 } // sccComputed
 
 // return number of wccs
-int Graph::wccCount() {
+int Graph::wccCount() const {
     return wccs;
 } // wccCount
 
 // return number of sccs
-int Graph::sccCount() {
+int Graph::sccCount() const {
     return sccs;
 } // sccComputed
 
 // write binary adjacency list to file
-void Graph::writeBinaryAdjacencyList(const Scope scope = Scope::FULL, string filename = "") {
-    FILE* myFile;
-    myFile = fopen(filename.c_str(), "wb");
+void Graph::writeBinaryAdjacencyList(const Scope scope = Scope::FULL, string filename = "") const {
+    FILE* myFile = fopen(filename.c_str(), "wb");
 
 	for(int i=0; i<n; i++) {
         if(inScope(i, scope)) {
@@ -942,21 +940,21 @@ vector<int> Graph::getSample(const int samples, const Scope scope = Scope::FULL)
     vector<bool> done(n, false);
     vector<int> todo;
     int a;
-    
+
     // fill todo array ...
     if(samples < nodes(scope)) {
         // ... with samples random node numbers
         for(int i=0; i<samples; i++) {
             a = 0;
-            while(done[a] || !inScope(a, scope)) 
+            while(done[a] || !inScope(a, scope))
                 a = rand() % n;
             todo.push_back(a);
             done[a] = true;
-        }       
-    } 
+        }
+    }
     else {
         // with numbers 0 to n-1
-        for(int i=0; i<n; i++) 
+        for(int i=0; i<n; i++)
             if(inScope(i, scope)) {
                 todo.push_back(i);
                 //done[i] = true;
@@ -966,12 +964,11 @@ vector<int> Graph::getSample(const int samples, const Scope scope = Scope::FULL)
 }
 
 double Graph::setSampleSize(int & samples, const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) {
-    
     double samplesize = inputsamplesize;
-    
+
     // this is only retained if samplesze is exactly 1.0
     samples = nodes(scope);
-    
+
     // sampling percentage was given
     if(samplesize < 1.0) {
         samples = (double) nodes(scope) * samplesize;
@@ -988,7 +985,7 @@ vector<double> Graph::approximateLocalClustering(vector<int> & todo) {
 
     vector<double> temparray((signed)todo.size(), -1);
     double temp;
-	
+
 #pragma omp parallel for schedule(dynamic, 1) private(temp)
     for(int i = 0; i < (signed)todo.size(); i++) {
         if(todo.size() >= 100 && i % ((signed)todo.size() / 20) == 0) // show status % without div by 0 errors
@@ -1014,6 +1011,3 @@ double Graph::approximateAverageClusteringCoefficient(const Scope scope = Scope:
     return (total / samplesize) / (long double) nodes(scope);
 } // approximateAverageClusteringCoefficient
 
-
-
-    
