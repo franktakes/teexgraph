@@ -27,7 +27,7 @@ namespace teexgraph {
 typedef long nodeidtype;
 
 // default max. node count; change here or by passing int to Graph constructor
-const int MAXN = 60000000;
+const int MAXN = 10000000;
 
 // diferent scopes at which we can call functions: on the FULL network, on the
 // largest weakly (WCC) or strongly (SCC) connected component
