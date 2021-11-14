@@ -577,7 +577,7 @@ vector<double> Graph::localClustering(const Scope scope = Scope::FULL) {
 
     double temp;
 
-#pragma omp parallel for schedule(dynamic, 1) private(temp)
+#pragma omp parallel for schedule(dynamic, 1) default(none) shared(clog, scope, temparray) private(temp)
     for(int i = 0; i < n; i++) {
         if(i % max(1, n / 20) == 0) // show status % without div by 0 errors
             clog << " " << i / max(1, n / 100) << "%";
@@ -613,7 +613,7 @@ long Graph::triangles(const Scope scope) {
     pair<long, long> result;
     const int cpus = omp_get_num_procs();
     vector<long> total(cpus, 0);
-#pragma omp parallel for schedule(dynamic, 1) private(tid,result)
+#pragma omp parallel for schedule(dynamic, 1) shared(clog, scope, total) private(tid, result)
     for(int i = 0; i < n; i++)
         if(inScope(i, scope)) {
         	if(i % max(1, n / 20) == 0) // show status % without div by 0 errors
@@ -636,15 +636,18 @@ long Graph::wedges(const Scope scope) {
     pair<long, long> result;
     const int cpus = omp_get_num_procs();
     vector<long> total(cpus, 0);
-#pragma omp parallel for schedule(dynamic, 1) private(tid,result)
-    for(int i = 0; i < n; i++)
+    
+#pragma omp parallel for schedule(dynamic, 1) default(none) shared(clog, scope, total) private(tid, result)
+    for(int i = 0; i < n; i++) {
         if(inScope(i, scope)) {
-            if(i % max(1, n / 20) == 0) // show status % without div by 0 errors
-            clog << " " << i / max(1, n / 100) << "%";
-     	   tid = omp_get_thread_num();
-     	   result = trianglesWedgesAround(i);
-     	   total[tid] += result.second;
-    	}
+        	if(i % max(1, n / 20) == 0) // show status % without div by 0 errors
+            	clog << " " << i / max(1, n / 100) << "%";
+     		tid = omp_get_thread_num();
+     		result = trianglesWedgesAround(i);
+     		total[tid] += result.second;
+    	} // if
+    } // for
+    
     clog << " Done." << endl;
     for(int i = 0; i < cpus; i++)
         grandtotal += total[i];
@@ -694,7 +697,7 @@ double Graph::graphClusteringCoefficient(const Scope scope = Scope::FULL) {
     const int cpus = omp_get_num_procs();
     vector<long double> triangles(cpus, 0);
     vector<long double> wedges(cpus, 0);
-#pragma omp parallel for schedule(dynamic, 1) private(tid,result)
+#pragma omp parallel for schedule(dynamic, 1) default(none) shared(clog, scope, triangles, wedges) private(tid, result)
     for(int i = 0; i < n; i++) {
         if(i % max(1, n / 20) == 0) // show status % without div by 0 errors
             clog << " " << i / max(1, n / 100) << "%";
@@ -848,7 +851,7 @@ vector<long> Graph::distanceDistribution(const Scope scope = Scope::FULL, const 
     clog << "Computing distance distribution (based on a " << samplesize * 100
          << "% sample of " << samples << " nodes = " << (signed)todo.size() << " nodes) with " << cpus << " CPUs..." << endl;
 
-#pragma omp parallel for schedule(dynamic, 1) private(tid, a)
+#pragma omp parallel for schedule(dynamic, 1) default(none) shared(clog, longarray, samples, todo) private(tid, a)
     for(size_t i=0; i<todo.size(); i++) {
     	a = todo[i];
         tid = omp_get_thread_num();
@@ -939,7 +942,8 @@ void Graph::writeBinaryAdjacencyList(const Scope scope = Scope::FULL, string fil
 
 // get an array containing a sample of samples nodes
 vector<int> Graph::getSample(const int samples, const Scope scope = Scope::FULL) {
-    vector<bool> done(n, false);
+    vector<bool> done(n+1, false);
+    done[n] = true;
     vector<int> todo;
     int a;
 
@@ -947,23 +951,23 @@ vector<int> Graph::getSample(const int samples, const Scope scope = Scope::FULL)
     if(samples < nodes(scope)) {
         // ... with samples random node numbers
         for(int i=0; i<samples; i++) {
-            a = 0;
-            while(done[a] || !inScope(a, scope))
+            a = n;
+            while(done[a] || !inScope(a, scope)) {
                 a = rand() % n;
+            } // while
             todo.push_back(a);
             done[a] = true;
-        }
-    }
+        } // for
+    } // if
     else {
-        // with numbers 0 to n-1
+        // ... with nodes 0 to n-1 that fall within scope
         for(int i=0; i<n; i++)
             if(inScope(i, scope)) {
                 todo.push_back(i);
-                //done[i] = true;
-            }
-    }
+            } // if
+    } // else
     return todo;
-}
+} // getSample
 
 double Graph::setSampleSize(int & samples, const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) {
     double samplesize = inputsamplesize;
@@ -988,10 +992,10 @@ vector<double> Graph::approximateLocalClustering(vector<int> & todo) {
     vector<double> temparray((signed)todo.size(), -1);
     double temp;
 
-#pragma omp parallel for schedule(dynamic, 1) private(temp)
+#pragma omp parallel for schedule(dynamic, 1) default(none) shared(clog,todo,temparray) private(temp)
     for(int i = 0; i < (signed)todo.size(); i++) {
         if(todo.size() >= 100 && i % ((signed)todo.size() / 20) == 0) // show status % without div by 0 errors
-            clog << " " << i / ((signed)todo.size() / 100) << "%";
+            std::clog << " " << i / ((signed)todo.size() / 100) << "%";
         temp = nodeClusteringCoefficient(todo[i]);
         temparray[i] = temp;
     }

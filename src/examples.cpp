@@ -88,11 +88,11 @@ void degreeDistribution(Graph & G) {
     G.printList(degs);
 }
 
-void clusteringStats(Graph & G) {
+void clusteringStats(Graph & G, double samplingRate = 1.0) {
     const int LEFTWIDTH = 40;
-    //cout << setw(LEFTWIDTH) << "Graph clustering coefficient: " << G.graphClusteringCoefficient(Scope::FULL) << endl;    
-	//cout << setw(LEFTWIDTH) << "Average local clustering coefficient: " << G.averageClusteringCoefficient(Scope::FULL) << endl;
-	cout << setw(LEFTWIDTH) << "Approx. avg. loc. clust. coefficient: " << G.approximateAverageClusteringCoefficient(Scope::FULL, 5) << endl;
+    cout << setw(LEFTWIDTH) << "Graph clustering coefficient: " << G.graphClusteringCoefficient(Scope::FULL) << endl;    
+	cout << setw(LEFTWIDTH) << "Average local clustering coefficient: " << G.averageClusteringCoefficient(Scope::FULL) << endl;
+	cout << setw(LEFTWIDTH) << "Approx. avg. loc. clust. coefficient: " << G.approximateAverageClusteringCoefficient(Scope::FULL, samplingRate) << endl;
 }
 
 void boundingDiameters(Graph & G) {

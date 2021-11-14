@@ -14,7 +14,7 @@ void boundingDiameters(Graph & G);
 void clusteringStats(Graph & G);
 void computeIntensiveStats(Graph & G);
 void degreeDistribution(Graph & G);
-void distanceDistribution(Graph & G);
+void distanceDistribution(Graph & G, double);
 void stats(Graph & G);
 
 }
