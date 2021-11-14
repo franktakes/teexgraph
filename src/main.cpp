@@ -50,7 +50,7 @@ int main(const int argc, const char* argv[]) {
     T.click();
 
     // list the network's distance distribution
-    //distanceDistribution(G); // from examples.cpp; compute-heavy
+    //distanceDistribution(G, 1.0); // from examples.cpp
     //T.click();
 
     // list the network's degree distribution

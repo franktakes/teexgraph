@@ -13,13 +13,13 @@ using namespace std;
 namespace teexgraph {
 
 // output how often each distance value occurs
-void distanceDistribution(Graph & G) {
+void distanceDistribution(Graph & G, double samplingRate = 1.0) {
 	vector<long> distances;
 	// second parameter "1.0" can be used to state a sampling percentage
     if(G.wccComputed())
-    	distances = G.distanceDistribution(Scope::LWCC, 1.0);
+    	distances = G.distanceDistribution(Scope::LWCC, samplingRate);
     else
-    	distances = G.distanceDistribution(Scope::FULL, 1.0);
+    	distances = G.distanceDistribution(Scope::FULL, samplingRate);
     G.printList(distances);
 }
 
