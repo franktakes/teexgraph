@@ -307,13 +307,13 @@ int Graph::extremaBounding(Extremum TYPE = Extremum::DIAMETER, const bool PRUNE 
 
     // return the diameter
     if(TYPE == Extremum::DIAMETER) {
-        cerr << "\nDiameter value: " << maxlower << endl;
+        cerr << "\nDiameter value: " << maxlower << std::endl;
         return maxlower;
     }
 
     // return the radius
     if(TYPE == Extremum::RADIUS) {
-        cerr << "\nRadius value: " << minupper << endl;
+        cerr << "\nRadius value: " << minupper << std::endl;
         return minupper;
     }
 
@@ -331,7 +331,7 @@ int Graph::extremaBounding(Extremum TYPE = Extremum::DIAMETER, const bool PRUNE 
             if(ecc_lower[i] == maxlower)
                 periphery++;
         }
-        cerr << "\nPeriphery size: " << periphery << endl;
+        cerr << "\nPeriphery size: " << periphery << std::endl;
         return periphery;
     }
 
@@ -342,7 +342,7 @@ int Graph::extremaBounding(Extremum TYPE = Extremum::DIAMETER, const bool PRUNE 
             if(ecc_upper[i] == minupper)
                 center++;
         }
-        cerr << "\nCenter size: " << center << endl;
+        cerr << "\nCenter size: " << center << std::endl;
         return center;
     }
 

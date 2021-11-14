@@ -12,6 +12,16 @@
 using namespace std;
 using namespace teexgraph;
 
+Graph::Graph(const std::string& filename, const bool directed){
+    maxn = MAXN;
+    clear();
+    if(directed){
+        loadDirected(filename);
+    } else {
+        loadUndirected(filename);
+    }
+}
+
 // initialization of Graph object
 Graph::Graph() {
     maxn = MAXN;

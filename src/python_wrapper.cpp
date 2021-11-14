@@ -4,10 +4,20 @@
 #include <pybind11/stl.h>
 
 #include <cstdint>
+#include <memory>
 
 using namespace teexgraph;
 
 namespace py = pybind11;
+
+std::unique_ptr<Graph> make_graph_from_vectors(
+    const std::vector<int64_t>& sources,
+    const std::vector<int64_t>& targets
+){
+    return std::make_unique<Graph>(sources, targets);
+}
+
+
 
 PYBIND11_MODULE(pyteexgraph, m) {
   m.doc() = "teexGraph for Python";
@@ -24,8 +34,21 @@ PYBIND11_MODULE(pyteexgraph, m) {
     }, "memo")
 
     .def(py::init<>())
+    .def(py::init<const int>())
+    .def(py::init<const std::string&, const bool>(), py::arg("filename"), py::arg("directed"))
+    .def(py::init(&make_graph_from_vectors), py::arg("sources"), py::arg("targets"))
+
     .def("loadDirected", &Graph::loadDirected, py::arg("filename"))
     .def("loadUndirected", &Graph::loadUndirected, py::arg("filename"))
+    .def("loadDirectedFromVectors",
+        [](
+            Graph &self,
+            const std::vector<int64_t>& sources,
+            const std::vector<int64_t>& targets
+        ){ self.loadDirectedFromVectors(sources, targets); },
+        py::arg("sources"), py::arg("targets")
+    )
+
     .def("clear", &Graph::clear)
 
     // status
