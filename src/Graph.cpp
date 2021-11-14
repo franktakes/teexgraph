@@ -581,40 +581,35 @@ double Graph::nodeClusteringCoefficient(const int u) {
 } // nodeClusteringCoefficient
 
 
-// compute the node clustering coefficient for each node
-vector<double> Graph::localClustering(const Scope scope = Scope::FULL) {
-    vector<double> temparray(n, -1);
+// compute/approximate the node clustering coefficient for each node
+vector<double> Graph::localClustering(vector<int> & todo) {
 
+    vector<double> temparray((signed)todo.size(), -1);
     double temp;
 
-#pragma omp parallel for schedule(dynamic, 1) default(none) shared(clog, scope, temparray) private(temp)
-    for(int i = 0; i < n; i++) {
-        if(i % max(1, n / 20) == 0) // show status % without div by 0 errors
-            clog << " " << i / max(1, n / 100) << "%";
-        if(inScope(i, scope)) {
-            temp = nodeClusteringCoefficient(i);
-            temparray[i] = temp;
-        }
+#pragma omp parallel for schedule(dynamic, 1) default(none) shared(clog,todo,temparray) private(temp)
+    for(int i = 0; i < (signed)todo.size(); i++) {
+        if(todo.size() >= 100 && i % ((signed)todo.size() / 20) == 0) // show status % without div by 0 errors
+            std::clog << " " << i / ((signed)todo.size() / 100) << "%";
+        temp = nodeClusteringCoefficient(todo[i]);
+        temparray[i] = temp;
     }
-    clog << " Done." << endl;
 
     return temparray;
 } // localClustering
 
-
-// compute the graph's average local clustering coefficient
-double Graph::averageClusteringCoefficient(const Scope scope = Scope::FULL) {
-    vector<double> values = localClustering(scope);
+// compute/approximate the graph's average local clustering coefficient
+double Graph::averageClusteringCoefficient(const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) {
+    int samples = 0;
+    double samplesize = setSampleSize(samples, scope, inputsamplesize); // also modifies samples
+    vector<int> todo = getSample(samples, scope);
+    vector<double> values = localClustering(todo);
     long double total = 0;
-    for(int i = 0; i < n; i++)
-        if(inScope(i, scope))
-            total += (long double) values[i];
+    for(int i = 0; i < (signed)todo.size(); i++)
+       total += (long double) values[i];
 
-    if(nodes(scope) > 0)
-        return total / (long double) nodes(scope);
-    return 0;
+    return (total / samplesize) / (long double) nodes(scope);
 } // averageClusteringCoefficient
-
 
 // get triangle count (ignoring direction)
 long Graph::triangles(const Scope scope) {
@@ -831,17 +826,19 @@ vector<int> Graph::distances(const int u, vector<long> & dtotals) const {
     }
     return d;
 } // distances
+
 double Graph::averageDistance(const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) {
     vector<long> result;
     long res = 0;
     result = distanceDistribution(scope, inputsamplesize);
-    for(int i = 0; i < nodes(Scope::FULL); i++)
+    for(size_t i = 0; i < result.size(); i++) {
         if(result[i] > 0) {
-            res += (i * result[i]);
-        }
+        	cerr << i << "  "  << result[i] << endl;
+            res += (long)i * result[i];
+        } // if
+    } // for
     return res / (long double) ((long double) nodes(scope) * ((long double) nodes(scope) - 1));
 } // averageDistance
-
 
 // print the distance distribution [distance frequency]
 vector<long> Graph::distanceDistribution(const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) {
@@ -976,35 +973,4 @@ double Graph::setSampleSize(int & samples, const Scope scope = Scope::FULL, cons
 
 	return samplesize; // and call by reference, samples
 }
-
-// approximate the node clustering coefficient for each node
-vector<double> Graph::approximateLocalClustering(vector<int> & todo) {
-
-    vector<double> temparray((signed)todo.size(), -1);
-    double temp;
-
-#pragma omp parallel for schedule(dynamic, 1) default(none) shared(clog,todo,temparray) private(temp)
-    for(int i = 0; i < (signed)todo.size(); i++) {
-        if(todo.size() >= 100 && i % ((signed)todo.size() / 20) == 0) // show status % without div by 0 errors
-            std::clog << " " << i / ((signed)todo.size() / 100) << "%";
-        temp = nodeClusteringCoefficient(todo[i]);
-        temparray[i] = temp;
-    }
-
-    return temparray;
-} // approximateLocalClustering
-
-
-// approximate the graph's average local clustering coefficient
-double Graph::approximateAverageClusteringCoefficient(const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) {
-    int samples = 0;
-    double samplesize = setSampleSize(samples, scope, inputsamplesize); // also modifies samples
-    vector<int> todo = getSample(samples, scope);
-    vector<double> values = approximateLocalClustering(todo);
-    long double total = 0;
-    for(int i = 0; i < (signed)todo.size(); i++)
-       total += (long double) values[i];
-
-    return (total / samplesize) / (long double) nodes(scope);
-} // approximateAverageClusteringCoefficient
 

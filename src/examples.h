@@ -11,7 +11,7 @@
 namespace teexgraph {
 
 void boundingDiameters(Graph & G);
-void clusteringStats(Graph & G);
+void clusteringStats(Graph & G, double);
 void computeIntensiveStats(Graph & G);
 void degreeDistribution(Graph & G);
 void distanceDistribution(Graph & G, double);

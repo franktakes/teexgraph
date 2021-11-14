@@ -92,12 +92,12 @@ PYBIND11_MODULE(pyteexgraph, m) {
     .def("eccentricitiesBD", &Graph::eccentricitiesBD)
 
     // triangles and clustering
-    .def("averageClusteringCoefficient", &Graph::averageClusteringCoefficient, py::arg("scope"))
+    .def("averageClusteringCoefficient", &Graph::averageClusteringCoefficient, py::arg("scope"), py::arg("sample_fraction")) 
     .def("graphClusteringCoefficient", &Graph::graphClusteringCoefficient, py::arg("scope"))
     .def("triangles", &Graph::triangles, py::arg("scope"))
     .def("wedges", &Graph::wedges, py::arg("scope"))
     .def("nodeClusteringCoefficient", &Graph::nodeClusteringCoefficient, py::arg("node_id"))
-    .def("localClustering", &Graph::localClustering, py::arg("scope"))
+    //.def("localClustering", &Graph::localClustering, py::arg("scope")) // temporarily disabled due to new argument type
     // pair<long, long> trianglesWedgesAround(const int);
 
 	// centrality

@@ -108,11 +108,9 @@ class Graph {
     bool wccComputed() const;
 
     // triangles and clustering
-    double averageClusteringCoefficient(const Scope);
-    double approximateAverageClusteringCoefficient(const Scope, const double);
+    double averageClusteringCoefficient(const Scope, const double);
     double graphClusteringCoefficient(const Scope);
-    std::vector<double> approximateLocalClustering(std::vector<int> &);
-    std::vector<double> localClustering(const Scope);
+    std::vector<double> localClustering(std::vector<int> &);
     double nodeClusteringCoefficient(const int);
     long triangles(const Scope);
     std::pair<long, long> trianglesWedgesAround(const int);

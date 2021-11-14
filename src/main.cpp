@@ -51,7 +51,7 @@ int main(const int argc, const char* argv[]) {
     //T.click();
 
 	// list some statistics related to clustering coefficients
-	//clusteringStats(G); // from examples.cpp
+	//clusteringStats(G, 1.0); // from examples.cpp
 	//T.click();
 
     return 0;
