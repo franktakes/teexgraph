@@ -95,7 +95,7 @@ class Graph {
     long wedges(const Scope);
 
     // distances, degree and compont size distributions
-    std::vector<long> distanceDistribution(const Scope, const double) const;
+    std::vector<long> distanceDistribution(const Scope, const double);
     std::vector<long> indegreeDistribution(const Scope);
     std::vector<long> outdegreeDistribution(const Scope);
     std::vector<int> sccSizeDistribution();
@@ -105,7 +105,7 @@ class Graph {
     int distance(const int, const int) const;
     std::vector<int> distances(const int, std::vector<long> &) const;
 	std::vector<int> alldistances(const int);
-    double averageDistance(const Scope, const double) const;
+    double averageDistance(const Scope, const double);
 
     // BoundingDiameters functions
     int centerSizeBD();

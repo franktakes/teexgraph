@@ -190,7 +190,7 @@ bool Graph::edge(const int a, const int b) {
 
 // check if there is an edge from a to b without requiring sortid list - O(outdegree(a))
 bool Graph::edgeSlow(const int a, const int b) {
-    for(int j = 0; j < E[a].size(); j++)
+    for(size_t j = 0; j < E[a].size(); j++)
         if(E[a][j] == b)
             return true;
     return false;
@@ -818,7 +818,7 @@ vector<int> Graph::distances(const int u, vector<long> & dtotals) const {
     }
     return d;
 } // distances
-double Graph::averageDistance(const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) const {
+double Graph::averageDistance(const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) {
     vector<long> result;
     long res = 0;
     result = distanceDistribution(scope, inputsamplesize);
@@ -831,7 +831,7 @@ double Graph::averageDistance(const Scope scope = Scope::FULL, const double inpu
 
 
 // print the distance distribution [distance frequency]
-vector<long> Graph::distanceDistribution(const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) const {
+vector<long> Graph::distanceDistribution(const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) {
 
     if(nodes(scope) < 2)
         return vector<long>(1, 0);
@@ -846,10 +846,10 @@ vector<long> Graph::distanceDistribution(const Scope scope = Scope::FULL, const 
     vector<int> todo = getSample(samples, scope);
 	
     clog << "Computing distance distribution (based on a " << samplesize * 100
-         << "% sample of " << samples << " nodes = " << (signed)todo.size() << " nodes) with " << cpus << " CPUs..." << endl
+         << "% sample of " << samples << " nodes = " << (signed)todo.size() << " nodes) with " << cpus << " CPUs..." << endl;
 
 #pragma omp parallel for schedule(dynamic, 1) private(tid, a)
-    for(int i=0; i<(signed)todo.size(); i++) {
+    for(size_t i=0; i<todo.size(); i++) {
     	a = todo[i];
         tid = omp_get_thread_num();
         if(samples > 100 && i % (samples / 20) == 0) // show status % without div by 0 errors
