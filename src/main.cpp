@@ -35,12 +35,19 @@ int main(const int argc, const char* argv[]) {
 
     // show some statistics of the network
     stats(G); // from examples.cpp
-	//computeIntensiveStats(G); // from examples.cpp;
     T.click();
 
     // compute the diameter of the largest WCC of this network
 	boundingDiameters(G); // from examples.cpp
     T.click();
+    
+    // list additional more compute-heavy statistics
+   	//averageDistance(G, 1.0); // from examples.cpp
+	//trianglesWedges(G); // compute-heavy
+
+	// list some statistics related to clustering coefficients
+	//clusteringStats(G, 1.0); // from examples.cpp
+	//T.click();
 
     // list the network's distance distribution
     //distanceDistribution(G, 1.0); // from examples.cpp
@@ -49,10 +56,6 @@ int main(const int argc, const char* argv[]) {
     // list the network's degree distribution
     //degreeDistribution(G); // from examples.cpp
     //T.click();
-
-	// list some statistics related to clustering coefficients
-	//clusteringStats(G, 1.0); // from examples.cpp
-	//T.click();
 
     return 0;
 }

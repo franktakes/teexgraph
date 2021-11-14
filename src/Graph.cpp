@@ -590,10 +590,11 @@ vector<double> Graph::localClustering(vector<int> & todo) {
 #pragma omp parallel for schedule(dynamic, 1) default(none) shared(clog,todo,temparray) private(temp)
     for(int i = 0; i < (signed)todo.size(); i++) {
         if(todo.size() >= 100 && i % ((signed)todo.size() / 20) == 0) // show status % without div by 0 errors
-            std::clog << " " << i / ((signed)todo.size() / 100) << "%";
+            clog << " " << i / ((signed)todo.size() / 100) << "%";
         temp = nodeClusteringCoefficient(todo[i]);
         temparray[i] = temp;
     }
+    clog << " Done." << endl;
 
     return temparray;
 } // localClustering
@@ -827,13 +828,13 @@ vector<int> Graph::distances(const int u, vector<long> & dtotals) const {
     return d;
 } // distances
 
-double Graph::averageDistance(const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) {
+// compute average distance between all node pairs; value makes sense on L(S/W)CC only
+double Graph::averageDistance(const Scope scope = Scope::LWCC, const double inputsamplesize = 1.0) {
     vector<long> result;
     long res = 0;
     result = distanceDistribution(scope, inputsamplesize);
     for(size_t i = 0; i < result.size(); i++) {
         if(result[i] > 0) {
-        	cerr << i << "  "  << result[i] << endl;
             res += (long)i * result[i];
         } // if
     } // for
@@ -856,7 +857,7 @@ vector<long> Graph::distanceDistribution(const Scope scope = Scope::FULL, const 
     vector<int> todo = getSample(samples, scope);
 	
     clog << "Computing distance distribution (based on a " << samplesize * 100
-         << "% sample of " << samples << " nodes = " << (signed)todo.size() << " nodes) with " << cpus << " CPUs..." << endl;
+         << "% sample of " << samples << " nodes) with " << cpus << " CPUs..." << endl;
 
 #pragma omp parallel for schedule(dynamic, 1) default(none) shared(clog, longarray, samples, todo) private(tid, a)
     for(size_t i=0; i<todo.size(); i++) {

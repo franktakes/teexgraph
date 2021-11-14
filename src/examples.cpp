@@ -72,15 +72,17 @@ void stats(Graph & G) {
     //cout << endl;
 } // stats
 
-void computeIntensiveStats(Graph & G) {
+void trianglesWedges(Graph & G) {
     const int LEFTWIDTH = 40;
-    
     // exact computation, in parallel
-    cout << setw(LEFTWIDTH) << "Triangles: " << G.triangles(Scope::FULL) << endl;
-    cout << setw(LEFTWIDTH) << "Wedges: " << G.wedges(Scope::FULL) << endl;
-    
-    // approximated, in parallel (also output as summary statistic of distanceDistribution() function below)
-    cout << setw(LEFTWIDTH) << "Average distance: " << G.averageDistance(Scope::FULL, 200) << endl;
+    cout << setw(LEFTWIDTH) << "WCC triangles: " << G.triangles(Scope::LWCC) << endl;
+    cout << setw(LEFTWIDTH) << "WCC wedges: " << G.wedges(Scope::LWCC) << endl;
+}
+
+void averageDistance(Graph & G, double samplingRate = 1.0) {   
+    const int LEFTWIDTH = 40; 
+    // approximated, in parallel; also output as summary statistic of distanceDistribution()
+    cout << setw(LEFTWIDTH) << "WCC average distance: " << G.averageDistance(Scope::LWCC, samplingRate) << endl;
 }
 
 void degreeDistribution(Graph & G) {
@@ -90,8 +92,8 @@ void degreeDistribution(Graph & G) {
 
 void clusteringStats(Graph & G, double samplingRate = 1.0) {
     const int LEFTWIDTH = 40;
-    cout << setw(LEFTWIDTH) << "Graph clustering coefficient: " << G.graphClusteringCoefficient(Scope::FULL) << endl;    
-	cout << setw(LEFTWIDTH) << "Average local clustering coefficient: " << G.averageClusteringCoefficient(Scope::FULL, samplingRate) << endl;
+    cout << setw(LEFTWIDTH) << "WCC graph clustering coefficient: " << G.graphClusteringCoefficient(Scope::LWCC ) << endl;    
+	cout << setw(LEFTWIDTH) << "WCC avg. local clustering coefficient: " << G.averageClusteringCoefficient(Scope::FULL, samplingRate) << endl;
 }
 
 void boundingDiameters(Graph & G) {
