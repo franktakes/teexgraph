@@ -75,7 +75,7 @@ class Graph {
         const std::vector<Integer>& targets
     );
 
-	bool inScope(const int, const Scope);
+    bool inScope(const int, const Scope) const;
 
     // components
     void computeSCC();
@@ -85,32 +85,32 @@ class Graph {
 #include <teexgraph/details/GraphTemplated.hpp>
 
     // basic topology
-    double averageDegree(const Scope);
-    double density(const Scope);
-    long edges(const Scope);
-    std::vector<int> & neighbors(const int);
-    int nodes(const Scope);
-    int nodesInScc(const int);
-    int nodesInWcc(const int);
+    double averageDegree(const Scope) const;
+    double density(const Scope) const;
+    long edges(const Scope) const;
+    const std::vector<int> & neighbors(const int) const;
+    int nodes(const Scope) const;
+    int nodesInScc(const int) const;
+    int nodesInWcc(const int) const;
     double reciprocity(const Scope scope);
-    std::vector<int> & revNeighbors(const int);
-    int sccCount();
-    long selfEdges(const Scope scope);
-    int wccCount();
-    int wccOf(const int);
+    const std::vector<int> & revNeighbors(const int) const;
+    int sccCount() const;
+    long selfEdges(const Scope scope) const;
+    int wccCount() const;
+    int wccOf(const int) const;
 
     // status
-    bool isLoaded();
-    bool isUndirected();
-    bool isSortedAndUnique();
-    bool sccComputed();
-    bool wccComputed();
+    bool isLoaded() const;
+    bool isUndirected() const;
+    bool isSortedAndUnique() const;
+    bool sccComputed() const;
+    bool wccComputed() const;
 
     // triangles and clustering
     double averageClusteringCoefficient(const Scope);
-    double approximateAverageClusteringCoefficient(const Scope, const double);    
+    double approximateAverageClusteringCoefficient(const Scope, const double);
     double graphClusteringCoefficient(const Scope);
-    std::vector<double> approximateLocalClustering(std::vector<int> &);    
+    std::vector<double> approximateLocalClustering(std::vector<int> &);
     std::vector<double> localClustering(const Scope);
     double nodeClusteringCoefficient(const int);
     long triangles(const Scope);
@@ -125,8 +125,8 @@ class Graph {
     std::vector<int> wccSizeDistribution();
 
     // distance metrics
-    int distance(const int, const int);
-    std::vector<int> distances(const int, std::vector<long> &);
+    int distance(const int, const int) const;
+    std::vector<int> distances(const int, std::vector<long> &) const;
 	std::vector<int> alldistances(const int);
     double averageDistance(const Scope, const double);
 
@@ -150,7 +150,7 @@ class Graph {
     std::vector<double> pageRankCentrality();
 
     // listener stuff
-    void writeBinaryAdjacencyList(const Scope, std::string);
+    void writeBinaryAdjacencyList(const Scope, std::string) const;
 
     void makeUndirected();
 
@@ -162,7 +162,7 @@ class Graph {
     void goMarkSCC(const int, const int);
     void goVisitSCC(const int, std::vector<bool> &, std::stack<int> &, std::vector<int> &, std::vector<int> &);
     int mapNode(const nodeidtype);
-    nodeidtype revMapNode(const int);
+    nodeidtype revMapNode(const int) const;
     void sortEdgeList();
 
   private:

@@ -245,7 +245,7 @@ vector<double> Graph::betweennessCentrality(const Scope scope = Scope::FULL, con
         while(!S.empty()) {
             w = S.top();
             S.pop();
-            for(int j = 0; j < (signed)P[w].size(); j++) {
+            for(size_t j = 0; j < P[w].size(); j++) {
                 v = P[w][j];
                 delta[v] += ((double) sp[v] / (double) sp[w])*(1.0 + delta[w]);
             }

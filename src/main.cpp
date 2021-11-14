@@ -22,7 +22,7 @@ int main(const int argc, const char* argv[]) { Graph G; return listener(G); }
 int main(const int argc, const char* argv[]) {
 
     // catch no input graph given in command line parameter
-    if(argc < 2) {
+    if(argc != 2) {
         cerr << "Error: first argument should be the network filename." << endl;
         return 1;
     }
@@ -42,7 +42,7 @@ int main(const int argc, const char* argv[]) {
 
     // show some statistics of the network
     stats(G); // from examples.cpp
-	//computeIntensiveStats(G); // from examples.cpp; 
+	//computeIntensiveStats(G); // from examples.cpp;
     T.click();
 
     // compute the diameter of the largest WCC of this network
@@ -50,7 +50,7 @@ int main(const int argc, const char* argv[]) {
     T.click();
 
     // list the network's distance distribution
-    //distanceDistribution(G); // from examples.cpp; compute-heavy
+    //distanceDistribution(G, 1.0); // from examples.cpp
     //T.click();
 
     // list the network's degree distribution
@@ -60,7 +60,7 @@ int main(const int argc, const char* argv[]) {
 	// list some statistics related to clustering coefficients
 	//clusteringStats(G); // from examples.cpp
 	//T.click();
-	
+
     return 0;
 }
 
