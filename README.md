@@ -1,7 +1,9 @@
 # teexGraph
 
-This C++ library is intended for large-scale network analysis and computation.
+This C++ library is intended for large-scale network analysis and computation. It can be used in two ways:
 
+* Directly as C++ library `teexgraph`
+* Through Python package `pyteexgraph` 
 
 ## About
 
@@ -9,7 +11,7 @@ Several explicit design choices were made in in this library:
 
 * Designed to handle millions of nodes and billions of edges.
 * All computation done in-memory and where possible on all available CPU's using OpenMP.
-* Focus is on the analysis of the topology/structure of simple directed and undirected graphs, read from a file.
+* Focus on the analysis of the topology/structure of simple directed and undirected graphs, read from a file.
 * Particular focus on distance-related functions for computing the exact and approximate distance distribution, distance-based network metrics such as the diameter, as well as centrality measures such as closeness and betweenness centrality.
 * No support for graph models/generators, node/edge attributes, node/edge weights, multi-partite networks, community detection algorithms or visualization (there are other tools that can do that).
 * Preference for simplicity over complexity; low-level C++ data structures are used wherever possible, requiring no other libraries than the standard `g++` compiler and the C++ standard library.
@@ -38,7 +40,7 @@ Of course, all credit goes to the original authors of these algorithms.
 
 ## Compilation
 
-If you want the Python library you'll need [PyBind11](https://github.com/pybind/pybind11). You can install it with:
+Optional: if you want the Python library you will need [PyBind11](https://github.com/pybind/pybind11). You can install it with:
 ```bash
 sudo apt install pybind11-dev
 ```
@@ -60,14 +62,14 @@ make
 
 ## Usage
 
-* The main way of using this code is by running the required code directly from C++. Consult the [main.cpp](src/main.cpp) and [examples.cpp](src/examples.cpp) files for examples of how to use the code. Alternatively, there is funtionality to use the code directly using Python package pyteexgraph. 
+* The main way of using this code is by running the required code directly from C++. Consult the [main.cpp](src/main.cpp) and [examples.cpp](src/examples.cpp) files for examples of how to use the code. Alternatively, there is funtionality to use the code directly using Python package `pyteexgraph`; see [python_example.py](examples/python_example.py). 
 * The library supports networks with up to INT_MAX (2 billion) nodes and as many edges as the memory of your machine can hold. If you want to have more than 10 million nodes or just want to optimize memory usage, pass some integer equal to or greater than the expected node count as one integer parameter to the constructor.
 * The program expects a whitespace-separated edge list (indicated by node pairs) as input format. By default, it assumes nodes of the type `long`. This can be changed to for example `string` in [Graph.h](src/main.cpp) at the cost of a factor 2 or more in loading speed. Friendly input files are expected; although comments (lines that do not start with a character in [a-zA-Z0-9]) at the beginning of the input file are allowed. After the first line with an edge, only edges are expected.
 
 
 ## Use as a Python library
 
-If PyBind11 is installed and teexGraph is compiled as above a file with a name ismilar to
+If PyBind11 is installed and teexGraph is compiled as above, a file with a name ismilar to
 ```text
 build/pyteexgraph.cpython-39-x86_64-linux-gnu.so
 ```
@@ -80,7 +82,7 @@ from within Python to load it.
 
 ## Use as a C++ library
 
-If your project uses cmake, then incorporating kilosim is easy!
+If your project uses cmake, then incorporating teexgraph is easy!
 
 Just add the following lines to your `CMakeLists.txt` file:
 ```text
@@ -88,7 +90,7 @@ add_subdirectory(path/to/teexgraph EXCLUDE_FROM_ALL)
 target_link_libraries(your_executable_target PRIVATE teexgraphlib)
 ```
 
-And everything should just work.
+And everything should work.
 
 
 ## Disclaimer
