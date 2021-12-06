@@ -59,6 +59,7 @@ cd build
 cmake -DCMAKE_BUILD_TYPE=Debug ..
 make
 ```
+Note: you may need gcc 4.7 or newer for all OpenMP functionality to work.
 
 ## Direct usage
 
