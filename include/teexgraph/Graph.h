@@ -88,12 +88,15 @@ class Graph {
     // basic topology
     double averageDegree(const Scope) const;
     double density(const Scope) const;
+    bool edge(const int, const int);
     long edges(const Scope) const;
+    int mapNode(const nodeidtype);
     const std::vector<int> & neighbors(const int) const;
     int nodes(const Scope) const;
     int nodesInScc(const int) const;
     int nodesInWcc(const int) const;
     double reciprocity(const Scope scope);
+    nodeidtype revMapNode(const int) const;
     const std::vector<int> & revNeighbors(const int) const;
     int sccCount() const;
     long selfEdges(const Scope scope) const;
@@ -151,12 +154,9 @@ class Graph {
   protected:
 
     bool addEdge(const int, const int);
-    bool edge(const int, const int);
     bool edgeSlow(const int, const int);
     void goMarkSCC(const int, const int);
     void goVisitSCC(const int, std::vector<bool> &, std::stack<int> &, std::vector<int> &, std::vector<int> &);
-    int mapNode(const nodeidtype);
-    nodeidtype revMapNode(const int) const;
     void sortEdgeList();
 
   private:
