@@ -65,29 +65,29 @@ void printNodeList(
 
 // print arrays of values, tab-separated [node value]
 template <typename Number>
-void printNodeList(
+void printNodeMultiList(
     const std::vector< std::vector<Number> > & values,
     const Scope scope = Scope::FULL
 ) {
-    std::vector<int> emptyfilter(n, 0);
+    std::vector<int> emptyfilter(values[0].size(), 0);
     if(scope == Scope::LSCC)
-        printFilteredNodeList(values, sccId, largestSCC);
+        printFilteredNodeMultiList(values, sccId, largestSCC);
     else if(scope == Scope::LWCC)
-        printFilteredNodeList(values, wccId, largestWCC);
+        printFilteredNodeMultiList(values, wccId, largestWCC);
     else if(scope == Scope::FULL)
-        printFilteredNodeList(values, emptyfilter, 0);
+        printFilteredNodeMultiList(values, emptyfilter, 0);
 } // printNodeList
 
 
 // print arrays of values, tab-separated [node value]
 template <typename Number>
-void printFilteredNodeList(
+void printFilteredNodeMultiList(
     const std::vector< std::vector<Number> > & values,
     const std::vector<int> & targetfilter,
     const int targetvalue
 ) {
     long double count = 0;
-    for(int i = 0; i < n; i++)
+    for(size_t i = 0; i < values[0].size(); i++)
         if(targetfilter[i] == targetvalue) {
             std::cout << revMapNode(i);
             for(size_t j = 0; j < values.size(); j++)
