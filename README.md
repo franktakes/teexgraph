@@ -49,7 +49,7 @@ Compile with the standard cmake sequence:
 ```bash
 mkdir build
 cd build
-cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
+cmake ..
 make
 ```
 or make a debugging build with
