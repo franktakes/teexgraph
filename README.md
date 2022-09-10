@@ -70,7 +70,7 @@ Note: you may need gcc 4.7 or newer for all OpenMP functionality to work.
 
 ## Use as a Python library
 
-If PyBind11 is installed and teexGraph is compiled as above, a file with a name ismilar to
+If PyBind11 is installed and teexGraph is compiled as above, a file with a name similar to
 ```text
 build/pyteexgraph.cpython-39-x86_64-linux-gnu.so
 ```
