@@ -173,3 +173,16 @@ void printEdges(const std::vector<Number> & targetfilter, const Number targetval
         }
     }
 }
+
+// return average of an array of values
+template <typename Number>
+double weightedAverageOfList(const std::vector<Number> & values) {
+    long double total = 0;
+    double count = 0;
+    for(size_t i = 0; i < values.size(); i++)
+        if(values[i] > 0) {
+            total += i * values[i];
+            count += values[i];
+        }
+    return total / count;
+} // weightedAverageOfList
