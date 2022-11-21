@@ -174,7 +174,7 @@ vector<double> Graph::eccentricityCentrality(const Scope scope = Scope::FULL) {
 } // eccentricityCentrality
 
 // Compute betweenness centrality cf. Brandes 2001 algorithm
-vector<double> Graph::betweennessCentrality(const Scope scope = Scope::FULL, const double samplesize = 1.0) {
+vector<double> Graph::betweennessCentrality(const Scope scope = Scope::FULL, const double inputsamplesize = 1.0) {
 
     if(!isUndirected() || scope == Scope::LSCC || nodes(scope) < 2) {
         cerr << "Betweenness centrality is only implemented for undirected graphs. Valid scopes are FULL and LWCC." << endl;
@@ -182,11 +182,20 @@ vector<double> Graph::betweennessCentrality(const Scope scope = Scope::FULL, con
     }
 
     const int cpus = omp_get_num_procs();
-    int tid;
     vector< vector<long double> > doublelongarray(cpus, vector<long double>(nodes(Scope::FULL), 0));
-    int until = nodes(scope);
-    if(samplesize < 1.0)
-        until = (double) nodes(Scope::FULL) * samplesize;
+    double samplesize = inputsamplesize;
+    int tid, maxi = nodes(scope);
+    vector<bool> done(nodes(Scope::FULL) + 1, false); // for sampling
+
+    if(samplesize < 1.0) {
+        maxi = (double) nodes(scope) * samplesize;
+    } else if(samplesize > 1.0 && samplesize < nodes(scope)) {
+        maxi = samplesize;
+        samplesize = (double) maxi / (double) nodes(scope);
+    }
+
+    int until = maxi;
+
     int prevs = -1;
 
     clog << "Computing betweenness values (based on a " << samplesize * 100
