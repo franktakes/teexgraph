@@ -51,7 +51,7 @@ class Graph {
     Graph(const int);
     Graph(const std::string& filename, const bool directed);
     template<
-        typename Integer,
+        typename Integer, 
         typename = typename std::enable_if<std::is_integral<Integer>::value, Integer>::type
     >
     Graph(
@@ -67,8 +67,8 @@ class Graph {
     bool loadDirected(const std::string);
     bool loadUndirected(const std::string);
     template<
-        typename Integer,
-        typename = typename std::enable_if<std::is_integral<Integer>::value, Integer>::type
+        typename Integer//,
+//        typename = typename std::enable_if<std::is_integral<Integer>::value, Integer>::type
     >
     void loadDirectedFromVectors(
         const std::vector<Integer>& sources,
@@ -219,8 +219,8 @@ class Graph {
 
 
 template<
-    typename Integer,
-    typename = typename std::enable_if<std::is_integral<Integer>::value, Integer>::type
+    typename Integer
+//    typename = typename std::enable_if<std::is_integral<Integer>::value, Integer>::type
 >
 void Graph::loadDirectedFromVectors(
     const std::vector<Integer>& sources,

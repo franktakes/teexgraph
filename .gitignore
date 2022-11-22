@@ -3,3 +3,4 @@ build*/
 debug/
 .vscode/
 data/
+*ipynb_checkpoint*
