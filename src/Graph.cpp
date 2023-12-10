@@ -137,8 +137,18 @@ bool Graph::loadDirected(const string filename) {
         return false;
     }
 
-    // ignore first lines that do not start with an integer character
+
+	// peek at first line
     char c = fin.peek();
+
+    // ignore any whitespace or newlines at the beginning of the file
+    while(c == '\n' || c == '\r' || c == '\t' || c == ' ') {
+        c = fin.get();        
+        c = fin.peek();    
+    }
+    
+    // ignore first lines that do not start with an alphanumeric character; 
+    // first line(s) might contain graph meta information in some formats
     while(!(
             (c >= '0' && c <= '9') ||
             (c >= 'a' && c <= 'z') ||
@@ -148,6 +158,8 @@ bool Graph::loadDirected(const string filename) {
             c = fin.get();
         c = fin.peek();
     }
+
+    // now we assume to have gotten rid of all meta data in the beginning of the file
 
     // load the edge list
     while(fin >> u >> v) {
