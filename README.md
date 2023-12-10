@@ -70,7 +70,7 @@ Note: you may need gcc 4.7 or newer for all OpenMP functionality to work.
 
 ## Use as a Python library
 
-If PyBind11 is installed and teexGraph is compiled as above, a file with a name similar to
+If PyBind11 is installed and the programme is compiled as above, a file with a name similar to
 ```text
 build/pyteexgraph.cpython-39-x86_64-linux-gnu.so
 ```
@@ -84,7 +84,7 @@ See [python_example.py](examples/python_example.py) for some examples.
 
 ## Use as a C++ library
 
-If your project uses cmake, then incorporating teexgraph is easy!
+If your project uses cmake, then incorporating this package is easy!
 
 Just add the following lines to your `CMakeLists.txt` file:
 ```text
@@ -99,4 +99,4 @@ And everything should work.
 
 This code was written for research-purposes only, and is and should in no way be seen as an attempt at creating a good piece of code with respect to any programming- or software-engineering standards whatsoever.
 It comes without any warranty of merchantability or suitability for a particular purpose.
-The software has exclusively been tested under the UNIX/Linux operating system, in particular Ubuntu LTS (12.04, 14.04 and 16.04) and CentOS (6.7 and 7).
+The software has exclusively been tested under the UNIX/Linux operating system, in particular Ubuntu LTS and CentOS.
