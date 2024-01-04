@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(rbrouting LANGUAGES CXX)
+project(teexgraph LANGUAGES CXX)
 
 find_package(OpenMP)
 find_package(pybind11)
