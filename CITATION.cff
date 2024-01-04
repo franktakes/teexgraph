@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the paper in which it was introduced."
+authors:
+- family-names: "Takes"
+  given-names: "Frank W."
+  orcid: "https://orcid.org/0000-0001-5468-1030"
+title: "teexGraph"
+version: 0.1
+date-released: 2011
+url: "https://github.com/franktakes/teexgraph"
+preferred-citation:
+  type: inproceedings
+  authors:
+  - family-names: "Takes"
+    given-names: "Frank W."
+    orcid: "https://orcid.org/0000-0001-5468-1030"
+  - family-names: "Kosters"
+    given-names: "Walter A."
+    orcid: "https://orcid.org/0000-0001-8860-0390"
+  doi: "10.1145/2063576.2063748"
+  booktitle: "Proceedings of the 20th ACM International Conference on Information and Knowledge Management (CIKM 2011)"
+  start: 1191 # First page number
+  end: 1196 # Last page number
+  title: "Determining the Diameter of Small World Networks"
+  year: 2011
+  
+  
+  
+  
+  
+  F.W. Takes and W.A. Kosters, Determining the Diameter of Small World Networks, in Proceedings of the 20th ACM International Conference on Information and Knowledge Management (CIKM 2011), pp. 1191-1196, 2011. doi: 10.1145/2063576.2063748
+
+
