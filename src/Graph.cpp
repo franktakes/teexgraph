@@ -6,6 +6,7 @@
 
 #include <teexgraph/Graph.h>
 
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -138,37 +139,24 @@ bool Graph::loadDirected(const string filename) {
     }
 
 
-	// peek at first line
-    char c = fin.peek();
-
-    // ignore any whitespace or newlines at the beginning of the file
-    while(c == '\n' || c == '\r' || c == '\t' || c == ' ') {
-        c = fin.get();        
-        c = fin.peek();    
-    }
-    
-    // ignore first lines that do not start with an alphanumeric character; 
-    // first line(s) might contain graph meta information in some formats
-    while(!(
-            (c >= '0' && c <= '9') ||
-            (c >= 'a' && c <= 'z') ||
-            (c >= 'A' && c <= 'Z')
-            )) {
-        while(c != '\n')
-            c = fin.get();
-        c = fin.peek();
-    }
-
-    // now we assume to have gotten rid of all meta data in the beginning of the file
-
-    // load the edge list
-    while(fin >> u >> v) {
-        if(m % 10000000 == 0 && m != 0)
+    // read one edge per line, skipping comments and lines without two node IDs
+    string line;
+    while(getline(fin, line)) {
+        istringstream edgeLine(line);
+        if(!(edgeLine >> u >> v)) {
+            continue;
+        }
+        if(m % 10000000 == 0 && m != 0) {
             clog << "   - " << m << " edges loaded so far..." << endl;
-        if(addEdge(mapNode(u), mapNode(v)))
+        }
+        // preserve first-encounter numbering, independent of argument evaluation order
+        const int source = mapNode(u);
+        const int target = mapNode(v);
+        if(addEdge(source, target)) {
             edgesAdded++;
-        else
+        } else {
             edgesSkipped++;
+        }
     }
 
     clog << "- " << edgesAdded << " edges added (m = " << m << ") in total\n- "
@@ -180,8 +168,8 @@ bool Graph::loadDirected(const string filename) {
 
     loaded = true;
 
-    // succesful if we didnt have to skip edges
-    if(edgesSkipped == 0) {
+    // successful if at least one edge was read without I/O or capacity errors
+    if(edgesAdded > 0 && edgesSkipped == 0 && !fin.bad()) {
         sortEdgeList();
         clog << "Loading done." << endl << endl;
         return true;

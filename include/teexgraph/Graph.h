@@ -242,7 +242,9 @@ void Graph::loadDirectedFromVectors(
 
     // load the edge list
     for(size_t i=0;i<sources.size();i++){
-        if(addEdge(mapNode(sources[i]), mapNode(targets[i]))){
+        const int source = mapNode(sources[i]);
+        const int target = mapNode(targets[i]);
+        if(addEdge(source, target)){
             edgesAdded++;
         } else {
             edgesSkipped++;
