@@ -26,7 +26,8 @@ namespace teexgraph {
 // node datatype in input file. for optimal loading speed, use long or int (not string)
 typedef long nodeidtype;
 
-// default max. node count; change here or by passing int to Graph constructor
+// default max. node count; change here or by passing int to Graph constructor.
+// Node storage grows with the nodes actually added, so a large limit costs no memory.
 const int MAXN = 10000000;
 
 // diferent scopes at which we can call functions: on the FULL network, on the
@@ -154,6 +155,7 @@ class Graph {
   protected:
 
     bool addEdge(const int, const int);
+    void reserveNode(const int);
     bool edgeSlow(const int, const int);
     void goMarkSCC(const int, const int);
     void goVisitSCC(const int, std::vector<bool> &, std::stack<int> &, std::vector<int> &, std::vector<int> &);
@@ -162,7 +164,7 @@ class Graph {
   private:
 
     // graph data, always consistent
-    int maxn; // maximal number of nodes
+    int maxn; // maximal number of nodes (an upper limit; storage grows as nodes appear)
     std::unordered_map<nodeidtype, int> nodeMapping; // mapping of input node-identifiers to 0, .., n-1
     std::unordered_map<int, nodeidtype> revMapping; // mapping 0, .., n-1 to input node-identifiers
     std::vector< std::vector<int> > E; // list of out-neighbors of i

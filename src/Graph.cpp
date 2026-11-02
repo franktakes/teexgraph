@@ -40,9 +40,10 @@ Graph::Graph(const int nmax) {
 void Graph::clear() {
     nodeMapping.clear();
     revMapping.clear();
-    E.assign(maxn, vector<int>(0));
-    rE.assign(maxn, vector<int>(0));
-    hasSelfLoop.assign(maxn, false);
+    // node storage grows in addEdge, so an unused maxn costs no memory
+    E.clear();
+    rE.clear();
+    hasSelfLoop.clear();
     n = m = selfm = nexti = 0;
     loaded = sortedandunique = undirected = doneWCC = doneSCC = false;
     largestWCC = wccs = largestSCC = sccs = 0;
@@ -60,6 +61,9 @@ int Graph::mapNode(const nodeidtype i) {
     if(nodeMapping.find(i) == nodeMapping.end()) {
         nodeMapping[i] = nexti;
         revMapping[nexti] = i;
+        if(nexti < maxn) {
+            reserveNode(nexti);
+        }
         nexti++;
     } // if
     return nodeMapping[i];
@@ -72,6 +76,16 @@ nodeidtype Graph::revMapNode(const int i) const {
 } // revMapNode
 
 
+// make room for node ids up to and including u
+void Graph::reserveNode(const int u) {
+    if(u >= (int)E.size()) {
+        E.resize(u + 1);
+        rE.resize(u + 1);
+        hasSelfLoop.resize(u + 1, false);
+    }
+} // reserveNode
+
+
 // add an edge to the graph and update the necessary statistics
 bool Graph::addEdge(const int u, const int v) {
 
@@ -79,6 +93,7 @@ bool Graph::addEdge(const int u, const int v) {
     if(u < 0 || u >= maxn || v < 0 || v >= maxn) {
         return false;
     }
+    reserveNode(u > v ? u : v);
 
     // note if it is a self-loop
     if(u == v) {
